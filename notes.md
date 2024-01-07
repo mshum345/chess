@@ -1,0 +1,1 @@
+General Chess Project Notes:
