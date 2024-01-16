@@ -52,14 +52,30 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         var validMoves = new ArrayList<ChessMove>();
+
         if (type == PieceType.BISHOP) {
-            bishopMoves(myPosition, board, validMoves);
+            BishopMoves(myPosition, board, validMoves);
+        }
+        else if (type == PieceType.KING) {
+            KingMoves(myPosition, board, validMoves);
+        }
+        else if (type == PieceType.KNIGHT) {
+            KnightMoves(myPosition, board, validMoves);
+        }
+        else if (type == PieceType.PAWN) {
+            PawnMoves(myPosition, board, validMoves);
+        }
+        else if (type == PieceType.QUEEN) {
+            QueenMoves(myPosition, board, validMoves);
+        }
+        else {
+            RookMoves(myPosition, board, validMoves);
         }
 
         return validMoves;
     }
 
-    private void bishopMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+    private void BishopMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
         var upL = true;
         var upR = true;
         var downL = true;
@@ -172,5 +188,20 @@ public class ChessPiece {
             
             i ++;
         }
+    }
+
+    private void KingMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+    }
+
+    private void KnightMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+    }
+
+    private void PawnMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+    }
+
+    private void QueenMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+    }
+
+    private void RookMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
     }
 }
