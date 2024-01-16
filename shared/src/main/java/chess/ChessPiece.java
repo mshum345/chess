@@ -10,8 +10,6 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-
-    private ArrayList<ChessMove> validMoves = new ArrayList<ChessMove>();
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
@@ -53,45 +51,120 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        var validMoves = new ArrayList<ChessMove>();
         if (type == PieceType.BISHOP) {
-            bishopMoves(myPosition);
+            bishopMoves(myPosition, board, validMoves);
         }
 
         return validMoves;
     }
 
-    private void bishopMoves(ChessPosition myPosition) {
-        boolean upL = true;
-        boolean upR = true;
-        boolean downL = true;
-        boolean downR = true;
-        int i = 1;
-        PieceType TESTPromotionPiece = PieceType.QUEEN;
+    private void bishopMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+        var upL = true;
+        var upR = true;
+        var downL = true;
+        var downR = true;
+        var row = myPosition.getRow();
+        var col = myPosition.getColumn();
+        var i = 1;
+        PieceType TESTPromotionPiece = null;
 
         while(upL || upR || downL || downR) {
-            if (myPosition.getRow() + i < 9 && myPosition.getColumn() - i > 0) {
-                validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i), TESTPromotionPiece));
+            //upL
+            if (row + i < 9 && col - i > 0) {
+                // creates new position and piece
+                var targPos = new ChessPosition(row + i, col - i);
+                var targPiece = board.getPiece(targPos);
+                
+                // checks if piece is there
+                if (targPiece != null) {
+                    //blocked
+                    if (targPiece.pieceColor == pieceColor) {
+                        upL = false;
+                    }
+                    else {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        upL = false;
+                    }
+                }
+                else {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
             }
             else {
                 upL = false;
             }
 
-            if (myPosition.getRow() + i < 9 && myPosition.getColumn() + i < 9) {
-                validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i), TESTPromotionPiece));
+            // upR
+            if (row + i < 9 && col + i < 9) {
+                // creates new position and piece
+                var targPos = new ChessPosition(row + i, col + i);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    //blocked
+                    if (targPiece.pieceColor == pieceColor) {
+                        upR = false;
+                    }
+                    else {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        upR = false;
+                    }
+                }
+                else {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
             }
             else {
                 upR = false;
             }
 
-            if (myPosition.getRow() - i > 0 && myPosition.getColumn() - i > 0) {
-                validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i), TESTPromotionPiece));
+            // downL
+            if (row - i > 0 && col - i > 0) {
+                // creates new position and piece
+                var targPos = new ChessPosition(row - i, col - i);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    //blocked
+                    if (targPiece.pieceColor == pieceColor) {
+                        downL = false;
+                    }
+                    else {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        downL = false;
+                    }
+                }
+                else {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
             }
             else {
                 downL = false;
             }
 
-            if (myPosition.getRow() - i > 0 && myPosition.getColumn() + i < 9) {
-                validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i), TESTPromotionPiece));
+            // downR
+            if (row - i > 0 && col + i < 9) {
+                // creates new position and piece
+                var targPos = new ChessPosition(row - i, col + i);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    //blocked
+                    if (targPiece.pieceColor == pieceColor) {
+                        downR = false;
+                    }
+                    else {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        downR = false;
+                    }
+                }
+                else {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
             }
             else {
                 downR = false;
@@ -99,7 +172,5 @@ public class ChessPiece {
             
             i ++;
         }
-
-        return;
     }
 }
