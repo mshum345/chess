@@ -87,7 +87,7 @@ public class ChessPiece {
 
         while(upL || upR || downL || downR) {
             //upL
-            if (row + i < 9 && col - i > 0) {
+            if (upL && row + i < 9 && col - i > 0) {
                 // creates new position and piece
                 var targPos = new ChessPosition(row + i, col - i);
                 var targPiece = board.getPiece(targPos);
@@ -112,7 +112,7 @@ public class ChessPiece {
             }
 
             // upR
-            if (row + i < 9 && col + i < 9) {
+            if (upR && row + i < 9 && col + i < 9) {
                 // creates new position and piece
                 var targPos = new ChessPosition(row + i, col + i);
                 var targPiece = board.getPiece(targPos);
@@ -137,7 +137,7 @@ public class ChessPiece {
             }
 
             // downL
-            if (row - i > 0 && col - i > 0) {
+            if (downL && row - i > 0 && col - i > 0) {
                 // creates new position and piece
                 var targPos = new ChessPosition(row - i, col - i);
                 var targPiece = board.getPiece(targPos);
@@ -162,7 +162,7 @@ public class ChessPiece {
             }
 
             // downR
-            if (row - i > 0 && col + i < 9) {
+            if (downR && row - i > 0 && col + i < 9) {
                 // creates new position and piece
                 var targPos = new ChessPosition(row - i, col + i);
                 var targPiece = board.getPiece(targPos);
@@ -191,6 +191,7 @@ public class ChessPiece {
     }
 
     private void KingMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+
     }
 
     private void KnightMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
