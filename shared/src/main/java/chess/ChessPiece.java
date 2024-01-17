@@ -195,8 +195,41 @@ public class ChessPiece {
         var row = myPosition.getRow();
         var col = myPosition.getColumn();
         PieceType TESTPromotionPiece = null;
-        var targPos = new ChessPosition(row, col);
-        var targPiece = board.getPiece(targPos);
+
+        //up, down, left, right, upL, upR, downL, downR
+        //up
+        if (row + 1 < 9) {
+            var targPos = new ChessPosition(row + 1, col);
+            var targPiece = board.getPiece(targPos);
+
+            // checks if piece is there
+            if (targPiece != null) {
+                //capture
+                if (targPiece.pieceColor != pieceColor) {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
+            }
+            else {
+                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+            }
+        }
+
+        //down
+        if (row - 1 > 0) {
+            var targPos = new ChessPosition(row - 1, col);
+            var targPiece = board.getPiece(targPos);
+
+            // checks if piece is there
+            if (targPiece != null) {
+                //capture
+                if (targPiece.pieceColor != pieceColor) {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
+            }
+            else {
+                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+            }
+        }
     }
 
     private void KnightMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
