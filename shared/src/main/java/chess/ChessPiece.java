@@ -484,80 +484,84 @@ public class ChessPiece {
         PieceType TESTPromotionPiece = null;
         // white on bottom, black on top
 
-        // white up
-        if (row + 1 < 9) {
-            var targPos = new ChessPosition(row + 1, col);
-            var targPiece = board.getPiece(targPos);
+        if (pieceColor == ChessGame.TeamColor.WHITE) {
+            // white up
+            if (row + 1 < 9) {
+                var targPos = new ChessPosition(row + 1, col);
+                var targPiece = board.getPiece(targPos);
 
-            // checks if piece is there
-            if (targPiece == null) {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
-            }
-        }
-
-        // white upL
-        if (row + 1 < 9 && col - 1 > 0) {
-            var targPos = new ChessPosition(row + 1, col - 1);
-            var targPiece = board.getPiece(targPos);
-
-            // checks if piece is there
-            if (targPiece != null) {
-                // capture
-                if (targPiece.pieceColor != pieceColor) {
+                // checks if piece is there
+                if (targPiece == null) {
                     validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
+            }
+
+            // white upL
+            if (row + 1 < 9 && col - 1 > 0) {
+                var targPos = new ChessPosition(row + 1, col - 1);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    // capture
+                    if (targPiece.pieceColor != pieceColor) {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    }
+                }
+            }
+
+            // white upR
+            if (row + 1 < 9 && col + 1 < 9) {
+                var targPos = new ChessPosition(row + 1, col + 1);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    // capture
+                    if (targPiece.pieceColor != pieceColor) {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    }
                 }
             }
         }
 
-        // white upR
-        if (row + 1 < 9 && col + 1 < 9) {
-            var targPos = new ChessPosition(row + 1, col + 1);
-            var targPiece = board.getPiece(targPos);
+        else {
+            // black down
+            if (row - 1 > 0) {
+                var targPos = new ChessPosition(row - 1, col);
+                var targPiece = board.getPiece(targPos);
 
-            // checks if piece is there
-            if (targPiece != null) {
-                // capture
-                if (targPiece.pieceColor != pieceColor) {
+                // checks if piece is there
+                if (targPiece == null) {
                     validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
                 }
             }
-        }
 
-        // black down
-        if (row - 1 > 0) {
-            var targPos = new ChessPosition(row - 1, col);
-            var targPiece = board.getPiece(targPos);
+            // black downL
+            if (row - 1 > 0 && col - 1 > 0) {
+                var targPos = new ChessPosition(row - 1, col - 1);
+                var targPiece = board.getPiece(targPos);
 
-            // checks if piece is there
-            if (targPiece == null) {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
-            }
-        }
-
-        // black downL
-        if (row - 1 > 0 && col - 1 > 0) {
-            var targPos = new ChessPosition(row - 1, col - 1);
-            var targPiece = board.getPiece(targPos);
-
-            // checks if piece is there
-            if (targPiece != null) {
-                // capture
-                if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                // checks if piece is there
+                if (targPiece != null) {
+                    // capture
+                    if (targPiece.pieceColor != pieceColor) {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    }
                 }
             }
-        }
 
-        // black downR
-        if (row - 1 > 0 && col + 1 < 9) {
-            var targPos = new ChessPosition(row - 1, col + 1);
-            var targPiece = board.getPiece(targPos);
+            // black downR
+            if (row - 1 > 0 && col + 1 < 9) {
+                var targPos = new ChessPosition(row - 1, col + 1);
+                var targPiece = board.getPiece(targPos);
 
-            // checks if piece is there
-            if (targPiece != null) {
-                // capture
-                if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                // checks if piece is there
+                if (targPiece != null) {
+                    // capture
+                    if (targPiece.pieceColor != pieceColor) {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    }
                 }
             }
         }
