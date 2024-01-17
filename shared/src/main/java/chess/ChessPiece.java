@@ -560,6 +560,104 @@ public class ChessPiece {
     }
 
     private void RookMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+        var up = true;
+        var down = true;
+        var left = true;
+        var right = true;
+        var row = myPosition.getRow();
+        var col = myPosition.getColumn();
+        var i = 1;
+        PieceType TESTPromotionPiece = null;
+
+        while(up || down || left || right) {
+            //up
+            if (up && row + i < 9) {
+                // creates new position and piece
+                var targPos = new ChessPosition(row + i, col);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    //blocked
+                    if (targPiece.pieceColor == pieceColor) {
+                        up = false;
+                    } else {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        up = false;
+                    }
+                } else {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
+            } else {
+                up = false;
+            }
+
+            //down
+            if (down && row - i > 0) {
+                // creates new position and piece
+                var targPos = new ChessPosition(row - i, col);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    //blocked
+                    if (targPiece.pieceColor == pieceColor) {
+                        down = false;
+                    } else {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        down = false;
+                    }
+                } else {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
+            } else {
+                down = false;
+            }
+
+            //left
+            if (left && col - i > 0) {
+                // creates new position and piece
+                var targPos = new ChessPosition(row, col - i);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    //blocked
+                    if (targPiece.pieceColor == pieceColor) {
+                        left = false;
+                    } else {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        left = false;
+                    }
+                } else {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
+            } else {
+                left = false;
+            }
+
+            //right
+            if (right && col + i < 9) {
+                // creates new position and piece
+                var targPos = new ChessPosition(row, col + i);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    //blocked
+                    if (targPiece.pieceColor == pieceColor) {
+                        right = false;
+                    } else {
+                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        right = false;
+                    }
+                } else {
+                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                }
+            } else {
+                right = false;
+            }
+        }
     }
 
     @Override
