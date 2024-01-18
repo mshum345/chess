@@ -84,7 +84,6 @@ public class ChessPiece {
         var row = myPosition.getRow();
         var col = myPosition.getColumn();
         var i = 1;
-        PieceType TESTPromotionPiece = null;
 
         while(upL || upR || downL || downR) {
             //upL
@@ -100,12 +99,12 @@ public class ChessPiece {
                         upL = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         upL = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -125,12 +124,12 @@ public class ChessPiece {
                         upR = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         upR = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -150,12 +149,12 @@ public class ChessPiece {
                         downL = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         downL = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -175,12 +174,12 @@ public class ChessPiece {
                         downR = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         downR = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -194,7 +193,6 @@ public class ChessPiece {
     private void KingMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
         var row = myPosition.getRow();
         var col = myPosition.getColumn();
-        PieceType TESTPromotionPiece = null;
 
         // up, down, left, right, upL, upR, downL, downR
         // up
@@ -206,11 +204,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 // capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -223,11 +221,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -240,11 +238,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -257,11 +255,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -274,11 +272,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -291,11 +289,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -308,11 +306,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -325,11 +323,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
     }
@@ -337,7 +335,6 @@ public class ChessPiece {
     private void KnightMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
         var row = myPosition.getRow();
         var col = myPosition.getColumn();
-        PieceType TESTPromotionPiece = null;
 
         //upL, upR, downL, downR, Lup, Ldown, Rup, Rdown
 
@@ -350,11 +347,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -367,11 +364,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -384,11 +381,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -401,11 +398,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -418,11 +415,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -435,11 +432,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -452,11 +449,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
 
@@ -469,11 +466,11 @@ public class ChessPiece {
             if (targPiece != null) {
                 //capture
                 if (targPiece.pieceColor != pieceColor) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
         }
     }
@@ -481,10 +478,14 @@ public class ChessPiece {
     private void PawnMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
         var row = myPosition.getRow();
         var col = myPosition.getColumn();
-        PieceType TESTPromotionPiece = null;
         // white on bottom, black on top
 
         if (pieceColor == ChessGame.TeamColor.WHITE) {
+            // white initial move
+            if (row == 2 && board.getPiece(new ChessPosition(row + 2, col)) == null && board.getPiece(new ChessPosition(row + 1, col)) == null) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col), null));
+            }
+
             // white up
             if (row + 1 < 9) {
                 var targPos = new ChessPosition(row + 1, col);
@@ -492,7 +493,15 @@ public class ChessPiece {
 
                 // checks if piece is there
                 if (targPiece == null) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    if (targPos.getRow() == 8) {
+                        validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                        validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                        validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                        validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                    }
+                    else {
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
+                    }
                 }
             }
 
@@ -505,7 +514,15 @@ public class ChessPiece {
                 if (targPiece != null) {
                     // capture
                     if (targPiece.pieceColor != pieceColor) {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        if (targPos.getRow() == 8) {
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, targPos, null));
+                        }
                     }
                 }
             }
@@ -519,13 +536,26 @@ public class ChessPiece {
                 if (targPiece != null) {
                     // capture
                     if (targPiece.pieceColor != pieceColor) {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        if (targPos.getRow() == 8) {
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, targPos, null));
+                        }
                     }
                 }
             }
         }
 
         else {
+            // black initial move
+            if (row == 7 && board.getPiece(new ChessPosition(row - 2, col)) == null && board.getPiece(new ChessPosition(row - 1, col)) == null) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(row - 2, col), null));
+            }
+
             // black down
             if (row - 1 > 0) {
                 var targPos = new ChessPosition(row - 1, col);
@@ -533,7 +563,15 @@ public class ChessPiece {
 
                 // checks if piece is there
                 if (targPiece == null) {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    if (targPos.getRow() == 1) {
+                        validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                        validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                        validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                        validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                    }
+                    else {
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
+                    }
                 }
             }
 
@@ -546,7 +584,15 @@ public class ChessPiece {
                 if (targPiece != null) {
                     // capture
                     if (targPiece.pieceColor != pieceColor) {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        if (targPos.getRow() == 1) {
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, targPos, null));
+                        }
                     }
                 }
             }
@@ -560,7 +606,15 @@ public class ChessPiece {
                 if (targPiece != null) {
                     // capture
                     if (targPiece.pieceColor != pieceColor) {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        if (targPos.getRow() == 1) {
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, targPos, null));
+                        }
                     }
                 }
             }
@@ -579,7 +633,6 @@ public class ChessPiece {
         var row = myPosition.getRow();
         var col = myPosition.getColumn();
         var i = 1;
-        PieceType TESTPromotionPiece = null;
 
         while(up || down || left || right || upL || upR || downL || downR) {
             //up
@@ -595,12 +648,12 @@ public class ChessPiece {
                         up = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         up = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -620,12 +673,12 @@ public class ChessPiece {
                         down = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         down = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -645,12 +698,12 @@ public class ChessPiece {
                         left = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         left = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -670,12 +723,12 @@ public class ChessPiece {
                         right = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         right = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -695,12 +748,12 @@ public class ChessPiece {
                         upL = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         upL = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -720,12 +773,12 @@ public class ChessPiece {
                         upR = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         upR = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -745,12 +798,12 @@ public class ChessPiece {
                         downL = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         downL = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -770,12 +823,12 @@ public class ChessPiece {
                         downR = false;
                     }
                     else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         downR = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             }
             else {
@@ -794,7 +847,6 @@ public class ChessPiece {
         var row = myPosition.getRow();
         var col = myPosition.getColumn();
         var i = 1;
-        PieceType TESTPromotionPiece = null;
 
         while(up || down || left || right) {
             //up
@@ -809,11 +861,11 @@ public class ChessPiece {
                     if (targPiece.pieceColor == pieceColor) {
                         up = false;
                     } else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         up = false;
                     }
                 } else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             } else {
                 up = false;
@@ -831,11 +883,11 @@ public class ChessPiece {
                     if (targPiece.pieceColor == pieceColor) {
                         down = false;
                     } else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         down = false;
                     }
                 } else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             } else {
                 down = false;
@@ -853,11 +905,11 @@ public class ChessPiece {
                     if (targPiece.pieceColor == pieceColor) {
                         left = false;
                     } else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         left = false;
                     }
                 } else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             } else {
                 left = false;
@@ -875,15 +927,16 @@ public class ChessPiece {
                     if (targPiece.pieceColor == pieceColor) {
                         right = false;
                     } else {
-                        validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                        validMoves.add(new ChessMove(myPosition, targPos, null));
                         right = false;
                     }
                 } else {
-                    validMoves.add(new ChessMove(myPosition, targPos, TESTPromotionPiece));
+                    validMoves.add(new ChessMove(myPosition, targPos, null));
                 }
             } else {
                 right = false;
             }
+            i++;
         }
     }
 
