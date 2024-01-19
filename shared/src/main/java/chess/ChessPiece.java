@@ -67,10 +67,10 @@ public class ChessPiece {
 
         if (type == PieceType.BISHOP) {
             while(upL || upR || downL || downR) {
-                upL = BishopMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
-                upR = BishopMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
-                downL = BishopMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
-                downR = BishopMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
+                upL = BishopQueenRookMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
+                upR = BishopQueenRookMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
+                downL = BishopQueenRookMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
+                downR = BishopQueenRookMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
                 i++;
             }
         }
@@ -99,23 +99,23 @@ public class ChessPiece {
         }
         else if (type == PieceType.QUEEN) {
             while(up || down || left || right || upL || upR || downL || downR) {
-                up = QueenMoves(up, myPosition, board, new ChessPosition(row + i, col), validMoves);
-                down = QueenMoves(down, myPosition, board, new ChessPosition(row - i, col), validMoves);
-                left = QueenMoves(left, myPosition, board, new ChessPosition(row, col - i), validMoves);
-                right = QueenMoves(right, myPosition, board, new ChessPosition(row, col + i), validMoves);
-                upL = QueenMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
-                upR = QueenMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
-                downL = QueenMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
-                downR = QueenMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
+                up = BishopQueenRookMoves(up, myPosition, board, new ChessPosition(row + i, col), validMoves);
+                down = BishopQueenRookMoves(down, myPosition, board, new ChessPosition(row - i, col), validMoves);
+                left = BishopQueenRookMoves(left, myPosition, board, new ChessPosition(row, col - i), validMoves);
+                right = BishopQueenRookMoves(right, myPosition, board, new ChessPosition(row, col + i), validMoves);
+                upL = BishopQueenRookMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
+                upR = BishopQueenRookMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
+                downL = BishopQueenRookMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
+                downR = BishopQueenRookMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
                 i++;
             }
         }
         else {
             while(up || down || left || right) {
-                up = RookMoves(up, myPosition, board, new ChessPosition(row + i, col), validMoves);
-                down = RookMoves(down, myPosition, board, new ChessPosition(row - i, col), validMoves);
-                left = RookMoves(left, myPosition, board, new ChessPosition(row, col - i), validMoves);
-                right = RookMoves(right, myPosition, board, new ChessPosition(row, col + i), validMoves);
+                up = BishopQueenRookMoves(up, myPosition, board, new ChessPosition(row + i, col), validMoves);
+                down = BishopQueenRookMoves(down, myPosition, board, new ChessPosition(row - i, col), validMoves);
+                left = BishopQueenRookMoves(left, myPosition, board, new ChessPosition(row, col - i), validMoves);
+                right = BishopQueenRookMoves(right, myPosition, board, new ChessPosition(row, col + i), validMoves);
                 i++;
             }
         }
@@ -123,7 +123,7 @@ public class ChessPiece {
         return validMoves;
     }
 
-    private boolean BishopMoves(boolean bool, ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
+    private boolean BishopQueenRookMoves(boolean bool, ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
         var targRow = targPos.getRow();
         var targCol = targPos.getColumn();
 
@@ -336,64 +336,6 @@ public class ChessPiece {
                 }
             }
         }
-    }
-
-    private boolean QueenMoves(boolean bool, ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
-        var targRow = targPos.getRow();
-        var targCol = targPos.getColumn();
-
-        if (bool && targRow < 9 && targRow > 0 && targCol < 9 && targCol > 0) {
-            // gets target piece
-            var targPiece = board.getPiece(targPos);
-
-            // checks if piece is there
-            if (targPiece != null) {
-                //blocked
-                if (targPiece.pieceColor == pieceColor) {
-                    bool = false;
-                }
-                else {
-                    validMoves.add(new ChessMove(myPosition, targPos, null));
-                    bool = false;
-                }
-            }
-            else {
-                validMoves.add(new ChessMove(myPosition, targPos, null));
-            }
-        }
-        else {
-            bool = false;
-        }
-        return bool;
-    }
-
-    private boolean RookMoves(boolean bool, ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
-        var targRow = targPos.getRow();
-        var targCol = targPos.getColumn();
-
-        if (bool && targRow < 9 && targRow > 0 && targCol < 9 && targCol > 0) {
-            // gets target piece
-            var targPiece = board.getPiece(targPos);
-
-            // checks if piece is there
-            if (targPiece != null) {
-                //blocked
-                if (targPiece.pieceColor == pieceColor) {
-                    bool = false;
-                }
-                else {
-                    validMoves.add(new ChessMove(myPosition, targPos, null));
-                    bool = false;
-                }
-            }
-            else {
-                validMoves.add(new ChessMove(myPosition, targPos, null));
-            }
-        }
-        else {
-            bool = false;
-        }
-        return bool;
     }
 
     @Override
