@@ -53,9 +53,26 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         var validMoves = new ArrayList<ChessMove>();
+        var up = true;
+        var down = true;
+        var left = true;
+        var right = true;
+        var upL = true;
+        var upR = true;
+        var downL = true;
+        var downR = true;
+        var row = myPosition.getRow();
+        var col = myPosition.getColumn();
+        var i = 1;
 
         if (type == PieceType.BISHOP) {
-            BishopMoves(myPosition, board, validMoves);
+            while(upL || upR || downL || downR) {
+                upL = BishopMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
+                upR = BishopMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
+                downL = BishopMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
+                downR = BishopMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
+                i++;
+            }
         }
         else if (type == PieceType.KING) {
             KingMoves(myPosition, board, validMoves);
@@ -76,118 +93,33 @@ public class ChessPiece {
         return validMoves;
     }
 
-    private void BishopMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
-        var upL = true;
-        var upR = true;
-        var downL = true;
-        var downR = true;
-        var row = myPosition.getRow();
-        var col = myPosition.getColumn();
-        var i = 1;
+    private boolean BishopMoves(boolean bool, ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
+        var targRow = targPos.getRow();
+        var targCol = targPos.getColumn();
 
-        while(upL || upR || downL || downR) {
-            //upL
-            if (upL && row + i < 9 && col - i > 0) {
-                // creates new position and piece
-                var targPos = new ChessPosition(row + i, col - i);
-                var targPiece = board.getPiece(targPos);
-                
-                // checks if piece is there
-                if (targPiece != null) {
-                    //blocked
-                    if (targPiece.pieceColor == pieceColor) {
-                        upL = false;
-                    }
-                    else {
-                        validMoves.add(new ChessMove(myPosition, targPos, null));
-                        upL = false;
-                    }
+        if (bool && targRow < 9 && targRow > 0 && targCol < 9 && targCol > 0) {
+            // gets target piece
+            var targPiece = board.getPiece(targPos);
+
+            // checks if piece is there
+            if (targPiece != null) {
+                //blocked
+                if (targPiece.pieceColor == pieceColor) {
+                    bool = false;
                 }
                 else {
                     validMoves.add(new ChessMove(myPosition, targPos, null));
+                    bool = false;
                 }
             }
             else {
-                upL = false;
+                validMoves.add(new ChessMove(myPosition, targPos, null));
             }
-
-            // upR
-            if (upR && row + i < 9 && col + i < 9) {
-                // creates new position and piece
-                var targPos = new ChessPosition(row + i, col + i);
-                var targPiece = board.getPiece(targPos);
-
-                // checks if piece is there
-                if (targPiece != null) {
-                    //blocked
-                    if (targPiece.pieceColor == pieceColor) {
-                        upR = false;
-                    }
-                    else {
-                        validMoves.add(new ChessMove(myPosition, targPos, null));
-                        upR = false;
-                    }
-                }
-                else {
-                    validMoves.add(new ChessMove(myPosition, targPos, null));
-                }
-            }
-            else {
-                upR = false;
-            }
-
-            // downL
-            if (downL && row - i > 0 && col - i > 0) {
-                // creates new position and piece
-                var targPos = new ChessPosition(row - i, col - i);
-                var targPiece = board.getPiece(targPos);
-
-                // checks if piece is there
-                if (targPiece != null) {
-                    //blocked
-                    if (targPiece.pieceColor == pieceColor) {
-                        downL = false;
-                    }
-                    else {
-                        validMoves.add(new ChessMove(myPosition, targPos, null));
-                        downL = false;
-                    }
-                }
-                else {
-                    validMoves.add(new ChessMove(myPosition, targPos, null));
-                }
-            }
-            else {
-                downL = false;
-            }
-
-            // downR
-            if (downR && row - i > 0 && col + i < 9) {
-                // creates new position and piece
-                var targPos = new ChessPosition(row - i, col + i);
-                var targPiece = board.getPiece(targPos);
-
-                // checks if piece is there
-                if (targPiece != null) {
-                    //blocked
-                    if (targPiece.pieceColor == pieceColor) {
-                        downR = false;
-                    }
-                    else {
-                        validMoves.add(new ChessMove(myPosition, targPos, null));
-                        downR = false;
-                    }
-                }
-                else {
-                    validMoves.add(new ChessMove(myPosition, targPos, null));
-                }
-            }
-            else {
-                downR = false;
-            }
-            
-            i ++;
         }
+        else {
+            bool = false;
+        }
+        return bool;
     }
 
     private void KingMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
