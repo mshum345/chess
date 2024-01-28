@@ -71,17 +71,13 @@ public class ChessGame {
 
         var myMoves = myPiece.pieceMoves(board, myPosition);
         // get validMoves for the start piece
-        // move the piece to all valid moves it has and for each move call GetAllValidMoves() for enemy team pieces
-        // if
-        // check all valid moves of all sliding pieces
-        // if one of those valid moves is the Kings position then return true
+        // move the piece to all valid moves it has and for each move call GetAllMoves() for enemy team pieces
+        // if the enemy team moves array corresponds with the kings position then dont add valid move
 
     }
 
-    private boolean CheckForStatusChange() {
-        var bool = false;
-
-        return bool;
+    private void MakeStatusChanges() {
+        // Check for check, checkmate, and stalemate then make those changes if needed
     }
 
 
@@ -93,6 +89,11 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         throw new RuntimeException("Not implemented");
+        // check move against validMoves function's ArrayList
+        // if move is contained in validMoves then make the move
+        // endPosition = myPiece
+        // startPosition = null
+        // MakeStatusChanges()
     }
 
     /**
