@@ -67,14 +67,36 @@ public class ChessGame {
         return validMoves;
     }
 
-    private void LeaveInCheckMoves(ChessBoard board, ChessPosition myPosition, ChessPiece myPiece, ArrayList<ChessMove> validMoves) {
-
-        var myMoves = myPiece.pieceMoves(board, myPosition);
+    private void LeaveInCheckMoves(ChessBoard testBoard, ChessPosition myPosition, ChessPiece myPiece, ArrayList<ChessMove> validMoves) {
         // get validMoves for the start piece
-        // move the piece to all valid moves it has and for each move call GetAllMoves() for enemy team pieces
-        // if the enemy team moves array corresponds with the kings position then dont add valid move
+        var myMoves = myPiece.pieceMoves(testBoard, myPosition);
 
+        // move the piece to all valid moves it has and for each move call GetAllAttackMoves() for enemy team pieces
+        if (myPiece.getTeamColor() == TeamColor.WHITE) {
+            for (var move : myMoves) {
+                // set up variables
+                testBoard = testBoard.TestMove(move);
+                var testMoves = testBoard.GetAllAttackMoves(TeamColor.BLACK);
+                var kingPos = testBoard.GetKing(TeamColor.WHITE);
+
+                // test if invalid move
+                var invalidMove = false;
+                for (var testMove : testMoves) {
+
+                    if (testMove.getEndPosition() == kingPos) {
+                        invalidMove = true;
+                    }
+                }
+
+                // add move
+                if (!invalidMove) {
+                    validMoves.add(move);
+                }
+            }
+        }
     }
+
+    private
 
     private void MakeStatusChanges() {
         // Check for check, checkmate, and stalemate then make those changes if needed
