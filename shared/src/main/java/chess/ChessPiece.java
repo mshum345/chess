@@ -338,6 +338,106 @@ public class ChessPiece {
         }
     }
 
+    public ArrayList<ChessMove> PawnAttackMoves(ChessBoard board, ChessPosition myPosition) {
+        var validMoves = new ArrayList<ChessMove>();
+        var row = myPosition.getRow();
+        var col = myPosition.getColumn();
+        // white on bottom, black on top
+
+        if (pieceColor == ChessGame.TeamColor.WHITE) {
+            // white upL
+            if (row + 1 < 9 && col - 1 > 0) {
+                var targPos = new ChessPosition(row + 1, col - 1);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    // capture
+                    if (targPiece.pieceColor != pieceColor) {
+                        if (targPos.getRow() == 8) {
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, targPos, null));
+                        }
+                    }
+                }
+            }
+
+            // white upR
+            if (row + 1 < 9 && col + 1 < 9) {
+                var targPos = new ChessPosition(row + 1, col + 1);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    // capture
+                    if (targPiece.pieceColor != pieceColor) {
+                        if (targPos.getRow() == 8) {
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, targPos, null));
+                        }
+                    }
+                }
+            }
+        }
+
+        else {
+            // black downL
+            if (row - 1 > 0 && col - 1 > 0) {
+                var targPos = new ChessPosition(row - 1, col - 1);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    // capture
+                    if (targPiece.pieceColor != pieceColor) {
+                        if (targPos.getRow() == 1) {
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, targPos, null));
+                        }
+                    }
+                }
+            }
+
+            // black downR
+            if (row - 1 > 0 && col + 1 < 9) {
+                var targPos = new ChessPosition(row - 1, col + 1);
+                var targPiece = board.getPiece(targPos);
+
+                // checks if piece is there
+                if (targPiece != null) {
+                    // capture
+                    if (targPiece.pieceColor != pieceColor) {
+                        if (targPos.getRow() == 1) {
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, targPos, PieceType.KNIGHT));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, targPos, null));
+                        }
+                    }
+                }
+            }
+        }
+        return validMoves;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -60,10 +61,26 @@ public class ChessGame {
         var myPiece = board.getPiece(startPosition);
         var validMoves = new ArrayList<ChessMove>();
 
-        if (currentTurn == myPiece.getTeamColor()) {
-            LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
-        }
 
+        if (currentTurn == myPiece.getTeamColor()) {
+            if (currentTurn == TeamColor.WHITE) {
+                if (whiteCheck) {
+                    // GetCheckMoves(testBoard, TeamColor.WHITE);
+                }
+                else {
+                    LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
+                }
+            }
+            else {
+                if (blackCheck) {
+                    // GetCheckMoves(testBoard, TeamColor.BLACK);
+                }
+                else {
+                    LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
+                }
+            }
+
+        }
         return validMoves;
     }
 
@@ -72,20 +89,52 @@ public class ChessGame {
         var myMoves = myPiece.pieceMoves(testBoard, myPosition);
 
         // move the piece to all valid moves it has and for each move call GetAllAttackMoves() for enemy team pieces
+        // WHITE
         if (myPiece.getTeamColor() == TeamColor.WHITE) {
             for (var move : myMoves) {
                 // set up variables
-                testBoard = testBoard.TestMove(move);
-                var testMoves = testBoard.GetAllAttackMoves(TeamColor.BLACK);
-                var kingPos = testBoard.GetKing(TeamColor.WHITE);
+                var tempBoard = new ChessBoard();
+                tempBoard = testBoard;
+                tempBoard.TestMove(move, myPiece);
+                var attackMoves = GetAllAttackMoves(TeamColor.BLACK, tempBoard);
+                var kingPos = tempBoard.GetKingPos(TeamColor.WHITE);
 
                 // test if invalid move
                 var invalidMove = false;
-                for (var testMove : testMoves) {
+                for (var attackMove : attackMoves) {
 
-                    if (testMove.getEndPosition() == kingPos) {
+                    if (attackMove.getEndPosition() == kingPos) {
                         invalidMove = true;
+                        break;
                     }
+
+                }
+
+                // add move
+                if (!invalidMove) {
+                    validMoves.add(move);
+                }
+            }
+        }
+        // BLACK
+        else {
+            for (var move : myMoves) {
+                // set up variables
+                var tempBoard = new ChessBoard();
+                tempBoard = testBoard;
+                tempBoard.TestMove(move, myPiece);
+                var attackMoves = GetAllAttackMoves(TeamColor.WHITE, tempBoard);
+                var kingPos = tempBoard.GetKingPos(TeamColor.BLACK);
+
+                // test if invalid move
+                var invalidMove = false;
+                for (var attackMove : attackMoves) {
+
+                    if (attackMove.getEndPosition() == kingPos) {
+                        invalidMove = true;
+                        break;
+                    }
+
                 }
 
                 // add move
@@ -95,8 +144,35 @@ public class ChessGame {
             }
         }
     }
+    private ArrayList<ChessMove> GetAllAttackMoves(TeamColor teamColor, ChessBoard testBoard) {
+        var attackMoves = new ArrayList<ChessMove>();
+        ChessPiece currPiece = null;
 
-    private
+        // loop through every testBoard square
+        for (var i = 1; i < 9; i++) {
+            for (var j = 1; j < 9; j++) {
+                var tempPos = new ChessPosition(i, j);
+                var tempPiece = testBoard.getPiece(tempPos);
+                if (tempPiece != null && tempPiece.getTeamColor() == teamColor) {
+                    var tempMoves = new ArrayList<ChessMove>();
+                    if (tempPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+                        tempMoves = (ArrayList<ChessMove>) tempPiece.PawnAttackMoves(testBoard, tempPos);
+                    }
+                    else {
+                        // get individual piece moves
+                        tempMoves = (ArrayList<ChessMove>) tempPiece.pieceMoves(testBoard, tempPos);
+                    }
+                    // copy tempMoves to attackMoves
+                    // adds only unique moves to attackMoves
+                    HashSet<ChessMove> temp = new HashSet<>(attackMoves);
+                    temp.addAll(tempMoves);
+                    var temp2 = new ArrayList<>(temp);
+                    attackMoves.addAll(temp2);
+                }
+            }
+        }
+        return attackMoves;
+    }
 
     private void MakeStatusChanges() {
         // Check for check, checkmate, and stalemate then make those changes if needed
