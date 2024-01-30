@@ -174,16 +174,7 @@ public class ChessGame {
         return attackMoves;
     }
 
-    private void MakeStatusChanges(ChessGame.TeamColor myColor) {
-        // Establish variables
-        TeamColor enemyColor;
-        if (myColor == TeamColor.WHITE) {
-            enemyColor = TeamColor.BLACK;
-        }
-        else {
-            enemyColor = TeamColor.WHITE;
-        }
-
+    private void MakeStatusChanges(TeamColor myColor, TeamColor enemyColor) {
         // Check for status changes then make those changes if needed
         if (CheckForCheck(myColor, enemyColor)) {
             SetCheck(enemyColor);
@@ -248,15 +239,41 @@ public class ChessGame {
         var myPos = move.getStartPosition();
         var targPos = move.getEndPosition();
         var myPiece = board.getPiece(myPos);
-        var validMoves = validMoves(myPos);
 
-        if (validMoves.contains(move)) {
-            board.addPiece(targPos, myPiece);
-            board.addPiece(myPos, null);
-            MakeStatusChanges(myPiece.getTeamColor());
+
+        // Establish team colors
+        TeamColor enemyColor;
+        TeamColor myColor = myPiece.getTeamColor();
+        if (myColor == TeamColor.WHITE) {
+            enemyColor = TeamColor.BLACK;
         }
         else {
-            throw new InvalidMoveException("Invalid Move");
+            enemyColor = TeamColor.WHITE;
+        }
+
+        // Check for Status
+        if (isInCheckmate(myColor)) {
+            // endGame
+        }
+        else if (isInStalemate(myColor)) {
+            // endGame
+        }
+        else if (isInCheck(myColor)) {
+            // InCheckMoves();
+        }
+        else {
+            var validMoves = validMoves(myPos);
+            if (validMoves.contains(move)) {
+                board.addPiece(targPos, myPiece);
+                board.addPiece(myPos, null);
+                // Make any new status changes
+                MakeStatusChanges(myColor, enemyColor);
+                // Change turns
+                this.currentTurn = enemyColor;
+            }
+            else {
+                throw new InvalidMoveException("Invalid Move");
+            }
         }
     }
 
