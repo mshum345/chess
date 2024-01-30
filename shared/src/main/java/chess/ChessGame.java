@@ -174,8 +174,67 @@ public class ChessGame {
         return attackMoves;
     }
 
-    private void MakeStatusChanges() {
-        // Check for check, checkmate, and stalemate then make those changes if needed
+    private void MakeStatusChanges(ChessGame.TeamColor myColor) {
+        // Establish variables
+        TeamColor enemyColor;
+        if (myColor == TeamColor.WHITE) {
+            enemyColor = TeamColor.BLACK;
+        }
+        else {
+            enemyColor = TeamColor.WHITE;
+        }
+
+        // Check for status changes then make those changes if needed
+        if (CheckForCheck(myColor, enemyColor)) {
+            SetCheck(enemyColor);
+            if (CheckForCheckmate(myColor, enemyColor)) {
+                SetCheckmate(enemyColor);
+            }
+        }
+        else {
+            if (CheckForStalemate(myColor, enemyColor)) {
+                SetStalemate(enemyColor);
+            }
+        }
+    }
+
+    private void SetStalemate(TeamColor enemyColor) {
+        if (enemyColor == TeamColor.WHITE) {
+            whiteStalemate = true;
+        }
+        else {
+            blackStalemate = true;
+        }
+    }
+
+    private void SetCheckmate(TeamColor enemyColor) {
+        if (enemyColor == TeamColor.WHITE) {
+            whiteCheckmate = true;
+        }
+        else {
+            blackCheckmate = true;
+        }
+    }
+
+    private void SetCheck(TeamColor enemyColor) {
+        if (enemyColor == TeamColor.WHITE) {
+            whiteCheck = true;
+        }
+        else {
+            blackCheck = true;
+        }
+    }
+
+    private boolean CheckForCheck(TeamColor myColor, TeamColor enemyColor) {
+        return true;
+    }
+
+    private boolean CheckForCheckmate(TeamColor myColor, TeamColor enemyColor) {
+        return true;
+    }
+
+    private boolean CheckForStalemate(TeamColor myColor, TeamColor enemyColor) {
+        return true;
     }
 
 
@@ -186,12 +245,19 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
-        // check move against validMoves function's ArrayList
-        // if move is contained in validMoves then make the move
-        // endPosition = myPiece
-        // startPosition = null
-        // MakeStatusChanges()
+        var myPos = move.getStartPosition();
+        var targPos = move.getEndPosition();
+        var myPiece = board.getPiece(myPos);
+        var validMoves = validMoves(myPos);
+
+        if (validMoves.contains(move)) {
+            board.addPiece(targPos, myPiece);
+            board.addPiece(myPos, null);
+            MakeStatusChanges(myPiece.getTeamColor());
+        }
+        else {
+            throw new InvalidMoveException("Invalid Move");
+        }
     }
 
     /**
