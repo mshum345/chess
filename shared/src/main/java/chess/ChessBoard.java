@@ -15,6 +15,22 @@ public class ChessBoard {
         
     }
 
+    public ChessBoard(ChessBoard original) {
+        this.squares = new ChessPiece[8][8];
+
+        // Copy ChessPiece objects from the original array to the copy
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (original.squares[i][j] != null) {
+                    // Assuming ChessPiece has a copy constructor
+                    this.squares[i][j] = new ChessPiece(original.squares[i][j]);
+                } else {
+                    this.squares[i][j] = null;
+                }
+            }
+        }
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *

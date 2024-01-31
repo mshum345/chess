@@ -94,25 +94,9 @@ public class ChessGame {
         if (myPiece.getTeamColor() == TeamColor.WHITE) {
             for (var move : myMoves) {
                 // set up variables
-                var tempBoard = new ChessBoard();
-                tempBoard = testBoard;
+                var tempBoard = new ChessBoard(testBoard);
                 tempBoard.TestMove(move, myPiece);
-                var attackMoves = GetAllAttackMoves(TeamColor.BLACK, tempBoard);
-                var kingPos = tempBoard.GetKingPos(TeamColor.WHITE);
-
-                // test if invalid move
-                var invalidMove = false;
-                for (var attackMove : attackMoves) {
-
-                    if (attackMove.getEndPosition() == kingPos) {
-                        invalidMove = true;
-                        break;
-                    }
-
-                }
-
-                // add move
-                if (!invalidMove) {
+                if (!CheckForCheck(TeamColor.WHITE, TeamColor.BLACK, tempBoard)) {
                     validMoves.add(move);
                 }
             }
@@ -121,24 +105,9 @@ public class ChessGame {
         else {
             for (var move : myMoves) {
                 // set up variables
-                var tempBoard = new ChessBoard();
-                tempBoard = testBoard;
+                var tempBoard = new ChessBoard(testBoard);
                 tempBoard.TestMove(move, myPiece);
-                var attackMoves = GetAllAttackMoves(TeamColor.WHITE, tempBoard);
-                var kingPos = tempBoard.GetKingPos(TeamColor.BLACK);
-
-                // test if invalid move
-                var invalidMove = false;
-                for (var attackMove : attackMoves) {
-
-                    if (attackMove.getEndPosition() == kingPos) {
-                        invalidMove = true;
-                        break;
-                    }
-                }
-
-                // add move
-                if (!invalidMove) {
+                if (!CheckForCheck(TeamColor.BLACK, TeamColor.WHITE, tempBoard)) {
                     validMoves.add(move);
                 }
             }
@@ -175,16 +144,16 @@ public class ChessGame {
 
     private void MakeStatusChanges(TeamColor myColor, TeamColor enemyColor) {
         // Check for status changes then make those changes if needed
-        if (CheckForCheck(myColor, enemyColor, board)) {
+        if (CheckForCheck(enemyColor, myColor, board)) {
             SetCheck(enemyColor);
-            var checkMoves = InCheckMoves(myColor, enemyColor);
+            var checkMoves = InCheckMoves(enemyColor, myColor);
             // Checkmate
             if (checkMoves.isEmpty()) {
                 SetCheckmate(enemyColor);
             }
         }
         else {
-            if (CheckForStalemate(myColor, enemyColor, board)) {
+            if (CheckForStalemate(enemyColor, myColor)) {
                 SetStalemate(enemyColor);
             }
         }
@@ -222,7 +191,8 @@ public class ChessGame {
         var attackMoves = GetAllAttackMoves(enemyColor, testBoard);
 
         for (var move : attackMoves) {
-            if (move.getEndPosition() == kingPos) {
+            var myPos = move.getEndPosition();
+            if (myPos.equals(kingPos)) {
                 return true;
             }
         }
@@ -230,8 +200,18 @@ public class ChessGame {
         return false;
     }
 
-    private boolean CheckForStalemate(TeamColor myColor, TeamColor enemyColor, ChessBoard testBoard) {
-        return true;
+    private boolean CheckForStalemate(TeamColor myColor, TeamColor enemyColor) {
+        var staleMoves = new ArrayList<ChessMove>();
+        for (var i = 1; i < 9; i++) {
+            for (var j = 1; j < 9; j++) {
+                var myPos = new ChessPosition(i, j);
+                var myPiece = board.getPiece(myPos);
+                if (myPiece != null && myColor == myPiece.getTeamColor()) {
+                    staleMoves.addAll(validMoves(myPos));
+                }
+            }
+        }
+        return staleMoves.isEmpty();
     }
 
 
@@ -291,7 +271,7 @@ public class ChessGame {
         var allMyMoves = GetAllMoves(myColor, board);
 
         for (var move : allMyMoves) {
-            var testBoard = board;
+            var testBoard = new ChessBoard(board);
             var myPiece = testBoard.getPiece(move.getStartPosition());
             testBoard.TestMove(move, myPiece);
             if (!CheckForCheck(myColor, enemyColor, testBoard)) {
@@ -378,6 +358,10 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
+        MakeStatusChanges(TeamColor.WHITE, TeamColor.BLACK);
+        currentTurn = TeamColor.BLACK;
+        MakeStatusChanges(TeamColor.BLACK, TeamColor.WHITE);
+        currentTurn = TeamColor.WHITE;
     }
 
     /**
