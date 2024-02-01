@@ -1,6 +1,5 @@
 package chess;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -201,6 +200,7 @@ public class ChessGame {
     }
 
     private boolean CheckForStalemate(TeamColor myColor, TeamColor enemyColor) {
+        currentTurn = myColor;
         var staleMoves = new ArrayList<ChessMove>();
         for (var i = 1; i < 9; i++) {
             for (var j = 1; j < 9; j++) {
@@ -211,6 +211,7 @@ public class ChessGame {
                 }
             }
         }
+        currentTurn = enemyColor;
         return staleMoves.isEmpty();
     }
 
@@ -285,7 +286,7 @@ public class ChessGame {
     }
 
     private ArrayList<ChessMove> GetAllMoves(TeamColor teamColor, ChessBoard testBoard) {
-        ArrayList<ChessMove> allMoves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> allMoves = new ArrayList<>();
 
         // loop through every testBoard square
         for (var i = 1; i < 9; i++) {
