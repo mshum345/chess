@@ -237,14 +237,8 @@ public class ChessGame {
             enemyColor = TeamColor.WHITE;
         }
 
-        // Check for Status
-        if (isInCheckmate(myColor)) {
-            // endGame
-        }
-        else if (isInStalemate(myColor)) {
-            // endGame
-        }
-        else if (isInCheck(myColor)) {
+        // check for check and fill validmoves
+        if (isInCheck(myColor)) {
             validMoves = InCheckMoves(myColor, enemyColor);
 
         }
@@ -254,8 +248,16 @@ public class ChessGame {
 
         // Check if valid move and make it
         if (validMoves.contains(move)) {
-            board.addPiece(targPos, myPiece);
-            board.addPiece(myPos, null);
+            // promotion
+            if (move.getPromotionPiece() != null) {
+                board.addPiece(targPos, new ChessPiece(myColor, move.getPromotionPiece()));
+                board.addPiece(myPos, null);
+            }
+            else {
+                board.addPiece(targPos, myPiece);
+                board.addPiece(myPos, null);
+            }
+
             // Make any new status changes
             MakeStatusChanges(myColor, enemyColor);
             // Change turns
