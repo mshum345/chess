@@ -152,6 +152,7 @@ public class ChessGame {
             }
         }
         else {
+            SetCheck(enemyColor);
             if (CheckForStalemate(enemyColor, myColor)) {
                 SetStalemate(enemyColor);
             }
@@ -178,10 +179,10 @@ public class ChessGame {
 
     private void SetCheck(TeamColor enemyColor) {
         if (enemyColor == TeamColor.WHITE) {
-            whiteCheck = true;
+            whiteCheck = !whiteCheck;
         }
         else {
-            blackCheck = true;
+            blackCheck = !blackCheck;
         }
     }
 
@@ -261,6 +262,7 @@ public class ChessGame {
 
             // Make any new status changes
             MakeStatusChanges(myColor, enemyColor);
+            MakeStatusChanges(enemyColor, myColor);
             // Change turns
             this.currentTurn = enemyColor;
         }
