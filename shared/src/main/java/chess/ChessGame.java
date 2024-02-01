@@ -272,6 +272,9 @@ public class ChessGame {
                 throw new InvalidMoveException("Invalid Move");
             }
         }
+        else {
+            throw new InvalidMoveException("Invalid Move");
+        }
     }
 
     private ArrayList<ChessMove> InCheckMoves(TeamColor myColor, TeamColor enemyColor) {
