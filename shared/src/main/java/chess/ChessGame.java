@@ -273,16 +273,20 @@ public class ChessGame {
 
     private ArrayList<ChessMove> InCheckMoves(TeamColor myColor, TeamColor enemyColor) {
         var checkMoves = new ArrayList<ChessMove>();
-        var allMyMoves = GetAllMoves(myColor, board);
 
-        for (var move : allMyMoves) {
-            var testBoard = new ChessBoard(board);
-            var myPiece = testBoard.getPiece(move.getStartPosition());
-            testBoard.TestMove(move, myPiece);
-            if (!CheckForCheck(myColor, enemyColor, testBoard)) {
-                checkMoves.add(move);
+        if (currentTurn == myColor) {
+            var allMyMoves = GetAllMoves(myColor, board);
+
+            for (var move : allMyMoves) {
+                var testBoard = new ChessBoard(board);
+                var myPiece = testBoard.getPiece(move.getStartPosition());
+                testBoard.TestMove(move, myPiece);
+                if (!CheckForCheck(myColor, enemyColor, testBoard)) {
+                    checkMoves.add(move);
+                }
             }
         }
+
 
         return checkMoves;
     }
