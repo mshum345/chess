@@ -144,7 +144,9 @@ public class ChessGame {
     private void MakeStatusChanges(TeamColor myColor, TeamColor enemyColor) {
         // Check for status changes then make those changes if needed
         if (CheckForCheck(enemyColor, myColor, board)) {
-            SetCheck(enemyColor);
+            if (!isInCheck(enemyColor)) {
+                SetCheck(enemyColor);
+            }
             var checkMoves = InCheckMoves(enemyColor, myColor);
             // Checkmate
             if (checkMoves.isEmpty()) {
@@ -152,7 +154,9 @@ public class ChessGame {
             }
         }
         else {
-            SetCheck(enemyColor);
+            if (isInCheck(enemyColor)) {
+                SetCheck(enemyColor);
+            }
             if (CheckForStalemate(enemyColor, myColor)) {
                 SetStalemate(enemyColor);
             }
