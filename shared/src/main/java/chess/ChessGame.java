@@ -62,26 +62,23 @@ public class ChessGame {
         var myPiece = board.getPiece(startPosition);
         var validMoves = new ArrayList<ChessMove>();
 
-
-        if (currentTurn == myPiece.getTeamColor()) {
-            if (currentTurn == TeamColor.WHITE) {
-                if (whiteCheck) {
-                    validMoves = InCheckMoves(TeamColor.WHITE, TeamColor.BLACK);
-                }
-                else {
-                    LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
-                }
+        if (currentTurn == TeamColor.WHITE) {
+            if (whiteCheck) {
+                validMoves = InCheckMoves(TeamColor.WHITE, TeamColor.BLACK);
             }
             else {
-                if (blackCheck) {
-                    validMoves = InCheckMoves(TeamColor.BLACK, TeamColor.WHITE);
-                }
-                else {
-                    LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
-                }
+                LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
             }
-
         }
+        else {
+            if (blackCheck) {
+                validMoves = InCheckMoves(TeamColor.BLACK, TeamColor.WHITE);
+            }
+            else {
+                LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
+            }
+        }
+
         return validMoves;
     }
 
@@ -244,35 +241,36 @@ public class ChessGame {
             enemyColor = TeamColor.WHITE;
         }
 
-        // check for check and fill validmoves
-        if (isInCheck(myColor)) {
-            validMoves = InCheckMoves(myColor, enemyColor);
+        if (currentTurn == myColor) {
 
-        }
-        else {
-            validMoves = (ArrayList<ChessMove>) validMoves(myPos);
-        }
+            // check for check and fill validmoves
+            if (isInCheck(myColor)) {
+                validMoves = InCheckMoves(myColor, enemyColor);
 
-        // Check if valid move and make it
-        if (validMoves.contains(move)) {
-            // promotion
-            if (move.getPromotionPiece() != null) {
-                board.addPiece(targPos, new ChessPiece(myColor, move.getPromotionPiece()));
-                board.addPiece(myPos, null);
+            } else {
+                validMoves = (ArrayList<ChessMove>) validMoves(myPos);
+            }
+
+            // Check if valid move and make it
+            if (validMoves.contains(move)) {
+                // promotion
+                if (move.getPromotionPiece() != null) {
+                    board.addPiece(targPos, new ChessPiece(myColor, move.getPromotionPiece()));
+                    board.addPiece(myPos, null);
+                } else {
+                    board.addPiece(targPos, myPiece);
+                    board.addPiece(myPos, null);
+                }
+
+                // Make any new status changes
+                MakeStatusChanges(myColor, enemyColor);
+                MakeStatusChanges(enemyColor, myColor);
+                // Change turns
+                this.currentTurn = enemyColor;
             }
             else {
-                board.addPiece(targPos, myPiece);
-                board.addPiece(myPos, null);
+                throw new InvalidMoveException("Invalid Move");
             }
-
-            // Make any new status changes
-            MakeStatusChanges(myColor, enemyColor);
-            MakeStatusChanges(enemyColor, myColor);
-            // Change turns
-            this.currentTurn = enemyColor;
-        }
-        else {
-            throw new InvalidMoveException("Invalid Move");
         }
     }
 
