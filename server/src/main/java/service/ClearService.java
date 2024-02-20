@@ -3,6 +3,8 @@ package service;
 import dataAccess.ClearDAO;
 import dataAccess.DataAccessException;
 
+import javax.xml.crypto.Data;
+
 public class ClearService {
     private ClearDAO dataAccess;
 
@@ -10,13 +12,7 @@ public class ClearService {
         this.dataAccess = dataAccess;
     }
 
-    public boolean ClearAll() throws DataAccessException {
+    public void ClearAll() throws DataAccessException {
         dataAccess.clearDatabase();
-
-        if (dataAccess.getAllUsers().isEmpty() && dataAccess.getAllAuths().isEmpty() && dataAccess.getAllGames().isEmpty()) {
-            return true;
-        }
-        return false;
     }
-
 }
