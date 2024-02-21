@@ -6,6 +6,7 @@ import dataAccess.MemoryClearDAO;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.junit.jupiter.api.Assertions;
 import service.ClearService;
 import java.util.HashMap;
 
@@ -32,19 +33,11 @@ public class ClearServiceTests {
 
         // run tests
         try {
-            clearAllTest();
+            service.ClearAll();
+            Assertions.assertTrue(!users.isEmpty() || !auths.isEmpty() || !games.isEmpty());
         } catch (Throwable ex) {
             System.out.printf("Unable to start server: %s%n", ex.getMessage());
         }
 
-    }
-
-    public void clearAllTest() throws DataAccessException {
-        service.ClearAll();
-
-        // Checks if all data has been cleared
-        if (!users.isEmpty() || !auths.isEmpty() || !games.isEmpty()) {
-            throw new DataAccessException("Clear all data failed");
-        }
     }
 }

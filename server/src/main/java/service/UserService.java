@@ -8,14 +8,14 @@ import model.UserData;
 import java.util.UUID;
 
 public class UserService {
-    private UserDAO dataAccess;
+    private UserDAO userDAO;
 
-    public UserService(UserDAO dataAccess) {
-        this.dataAccess = dataAccess;
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     public AuthData register(UserData userData) throws DataAccessException {
-        var checkUser = dataAccess.getUser(userData);
+        var checkUser = userDAO.getUser(userData.username());
 
         // Check if username has already been taken
         if (checkUser != null) {
@@ -25,15 +25,15 @@ public class UserService {
         // Generate AuthData and insert into users and auths
         var authToken = UUID.randomUUID().toString();
         var authData = new AuthData(authToken, userData.username());
-        dataAccess.addUser(userData);
-        dataAccess.addAuth(authData);
+        userDAO.addUser(userData);
+        userDAO.addAuth(authData);
 
         return authData;
     }
 
     public AuthData login(UserData userData) throws DataAccessException {
-        var checkUser = dataAccess.getUser(userData);
-        var checkAuth = dataAccess.getAuthFromUser(userData);
+        var checkUser = userDAO.getUser(userData.username());
+        var checkAuth = userDAO.getAuth(userData.username());
         AuthData newAuth;
 
         // Check if user exists
@@ -59,12 +59,12 @@ public class UserService {
     }
 
     public void logout(AuthData authData) throws DataAccessException {
-        var checkAuth = dataAccess.getAuthFromAuth(authData);
+        var checkAuth = userDAO.getAuth(authData.username());
 
         if (checkAuth == null) {
             throw new DataAccessException("Error: unauthorized");
         }
 
-        dataAccess.deleteAuth(authData);
+        userDAO.deleteAuth(authData.username());
     }
 }

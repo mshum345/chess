@@ -4,15 +4,13 @@ import model.AuthData;
 import model.UserData;
 
 public interface UserDAO {
-    UserData getUser(UserData userData) throws DataAccessException;
+    UserData getUser(String username) throws DataAccessException;
 
     void addUser(UserData userData) throws DataAccessException;
 
     void addAuth(AuthData authData) throws DataAccessException;
 
-    AuthData getAuthFromUser(UserData userData);
+    AuthData getAuth(String username) throws DataAccessException;
 
-    AuthData getAuthFromAuth(AuthData authData);
-
-    void deleteAuth(AuthData authData);
+    void deleteAuth(String username) throws DataAccessException;
 }
