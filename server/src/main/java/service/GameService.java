@@ -20,7 +20,7 @@ public class GameService {
     }
 
     public Collection listGames(AuthData authData) throws DataAccessException {
-        var checkAuth = userDAO.getAuth(authData.username());
+        var checkAuth = userDAO.getAuth(authData.authToken());
 
         if (checkAuth == null) {
             throw new DataAccessException("Error: unauthorized");
@@ -30,7 +30,7 @@ public class GameService {
     }
 
     public GameData createGame(AuthData authData, String gameName) throws DataAccessException {
-        var checkAuth = userDAO.getAuth(authData.username());
+        var checkAuth = userDAO.getAuth(authData.authToken());
 
         if (checkAuth == null) {
             throw new DataAccessException("Error: unauthorized");
@@ -40,7 +40,7 @@ public class GameService {
     }
 
     public void joinGame(AuthData authData, String playerColor, int gameID) throws DataAccessException {
-        var checkAuth = userDAO.getAuth(authData.username());
+        var checkAuth = userDAO.getAuth(authData.authToken());
         var oldGameData = gameDAO.getGame(gameID);
         ChessGame oldGame;
         GameData newGameData;

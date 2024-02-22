@@ -33,8 +33,6 @@ public class UserService {
 
     public AuthData login(UserData userData) throws DataAccessException {
         var checkUser = userDAO.getUser(userData.username());
-        var checkAuth = userDAO.getAuth(userData.username());
-        AuthData newAuth;
 
         // Check if user exists
         if (checkUser == null) {
@@ -46,25 +44,20 @@ public class UserService {
             throw new DataAccessException("Error: unauthorized");
         }
 
-        // If not already logged in: create new token, if already logged in: return old token
-        if (checkAuth == null) {
-            var authToken = UUID.randomUUID().toString();
-            newAuth = new AuthData(authToken, userData.username());
-        }
-        else {
-            newAuth = checkAuth;
-        }
+        var authToken = UUID.randomUUID().toString();
+        var newAuth = new AuthData(authToken, userData.username());
+        userDAO.addAuth(newAuth);
 
         return newAuth;
     }
 
     public void logout(AuthData authData) throws DataAccessException {
-        var checkAuth = userDAO.getAuth(authData.username());
+        var checkAuth = userDAO.getAuth(authData.authToken());
 
         if (checkAuth == null) {
             throw new DataAccessException("Error: unauthorized");
         }
 
-        userDAO.deleteAuth(authData.username());
+        userDAO.deleteAuth(authData.authToken());
     }
 }

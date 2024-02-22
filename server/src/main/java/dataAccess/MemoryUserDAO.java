@@ -27,14 +27,14 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     public void addAuth(AuthData authData) {
-        auths.put(authData.username(), authData);
+        auths.put(authData.authToken(), authData);
     }
 
-    public AuthData getAuth(String username) {
-        return auths.get(username);
+    public AuthData getAuth(String authToken) {
+        return auths.get(authToken);
     }
 
-    public void deleteAuth(String username) {
-        auths.remove(username);
+    public void deleteAuth(String authToken) {
+        auths.remove(authToken);
     }
 }
