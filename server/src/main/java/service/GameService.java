@@ -23,7 +23,7 @@ public class GameService {
         var checkAuth = userDAO.getAuth(authData.authToken());
 
         if (checkAuth == null) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException(401, "Error: unauthorized");
         }
 
         return gameDAO.getGames();
@@ -33,7 +33,7 @@ public class GameService {
         var checkAuth = userDAO.getAuth(authData.authToken());
 
         if (checkAuth == null) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException(401, "Error: unauthorized");
         }
 
         return gameDAO.createGame(gameName);
@@ -46,19 +46,19 @@ public class GameService {
         GameData newGameData;
 
         if (checkAuth == null) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException(401, "Error: unauthorized");
         }
 
         if (playerColor.equals("WHITE")) {
             if (!oldGameData.WhiteUsername().equals(null)) {
-                throw new DataAccessException("Error: already taken");
+                throw new DataAccessException(403, "Error: already taken");
             }
             oldGame = oldGameData.game();
             newGameData = new GameData(gameID, authData.username(), oldGameData.BlackUsername(), oldGameData.gameName(), oldGame);
         }
         else if (playerColor.equals("BLACK")){
             if (!oldGameData.BlackUsername().equals(null)) {
-                throw new DataAccessException("Error: already taken");
+                throw new DataAccessException(403, "Error: already taken");
             }
             oldGame = oldGameData.game();
             newGameData = new GameData(gameID, oldGameData.WhiteUsername(), authData.username(), oldGameData.gameName(), oldGame);

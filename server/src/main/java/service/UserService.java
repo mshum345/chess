@@ -19,7 +19,7 @@ public class UserService {
 
         // Check if username has already been taken
         if (checkUser != null) {
-            throw new DataAccessException("Error: already taken");
+            throw new DataAccessException(403, "Error: already taken");
         }
 
         // Generate AuthData and insert into users and auths
@@ -36,12 +36,12 @@ public class UserService {
 
         // Check if user exists
         if (checkUser == null) {
-            throw new DataAccessException("Error: user does not exist");
+            throw new DataAccessException(500, "Error: user does not exist");
         }
 
         // Check if password matches
         if (!checkUser.password().equals(userData.password())) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException(401, "Error: unauthorized");
         }
 
         var authToken = UUID.randomUUID().toString();
@@ -55,7 +55,7 @@ public class UserService {
         var checkAuth = userDAO.getAuth(authData.authToken());
 
         if (checkAuth == null) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException(401, "Error: unauthorized");
         }
 
         userDAO.deleteAuth(authData.authToken());
