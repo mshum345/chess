@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Server {
-    private HashMap<String, UserData> users;
-    private HashMap<String, AuthData> auths;
-    private HashMap<Integer, GameData> games;
+    private HashMap<String, UserData> users = new HashMap<>();
+    private HashMap<String, AuthData> auths  = new HashMap<>();
+    private HashMap<Integer, GameData> games  = new HashMap<>();
     private ClearService clearService;
     private UserService userService;
     private GameService gameService;
