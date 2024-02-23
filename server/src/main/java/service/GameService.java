@@ -8,9 +8,6 @@ import model.AuthData;
 import model.GameData;
 import model.ResponseData;
 
-import javax.xml.crypto.Data;
-import java.util.Collection;
-
 public class GameService {
     private GameDAO gameDAO;
     private UserDAO userDAO;
@@ -25,11 +22,11 @@ public class GameService {
 
         // Checks auth token
         if (checkAuth == null) {
-            return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
+            return new ResponseData(401, "Error: unauthorized", null, null, null, null);
         }
 
         var games = gameDAO.getGames();
-        return new ResponseData(200, null, null, null, games, 0);
+        return new ResponseData(200, null, null, null, games, null);
     }
 
     public ResponseData createGame(AuthData authData, String gameName) throws DataAccessException {
@@ -37,7 +34,7 @@ public class GameService {
 
         // Checks auth token
         if (checkAuth == null) {
-            return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
+            return new ResponseData(401, "Error: unauthorized", null, null, null, null);
         }
         var newGame = gameDAO.createGame(gameName);
 
@@ -52,25 +49,25 @@ public class GameService {
 
         // Checks auth token
         if (checkAuth == null) {
-            return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
+            return new ResponseData(401, "Error: unauthorized", null, null, null, null);
         }
 
         // WHITE
         if (playerColor.equals("WHITE")) {
-            if (!oldGameData.WhiteUsername().isEmpty()) {
-                return new ResponseData(403, "Error: already taken", null, null, null, 0);
+            if (!oldGameData.whiteUsername().isEmpty()) {
+                return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
             oldGame = oldGameData.game();
-            newGameData = new GameData(gameID, checkAuth.username(), oldGameData.BlackUsername(), oldGameData.gameName(), oldGame);
+            newGameData = new GameData(gameID, checkAuth.username(), oldGameData.blackUsername(), oldGameData.gameName(), oldGame);
         }
 
         // BLACK
         else if (playerColor.equals("BLACK")){
-            if (!oldGameData.BlackUsername().isEmpty()) {
-                return new ResponseData(403, "Error: already taken", null, null, null, 0);
+            if (!oldGameData.blackUsername().isEmpty()) {
+                return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
             oldGame = oldGameData.game();
-            newGameData = new GameData(gameID, oldGameData.WhiteUsername(), checkAuth.username(), oldGameData.gameName(), oldGame);
+            newGameData = new GameData(gameID, oldGameData.whiteUsername(), checkAuth.username(), oldGameData.gameName(), oldGame);
         }
         else {
             // Join as observer
@@ -78,6 +75,6 @@ public class GameService {
         }
 
         gameDAO.replaceGame(newGameData);
-        return new ResponseData(200, null, null, null, null, 0);
+        return new ResponseData(200, null, null, null, null, null);
     }
 }

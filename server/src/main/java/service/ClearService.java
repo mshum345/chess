@@ -13,6 +13,6 @@ public class ClearService {
 
     public ResponseData ClearAll() throws DataAccessException {
         clearDAO.clearDatabase();
-        return new ResponseData(200, null, null, null, null, 0);
+        return new ResponseData(200, null, null, null, null, null);
     }
 }

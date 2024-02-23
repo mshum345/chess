@@ -10,7 +10,6 @@ import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import service.GameService;
-import service.UserService;
 
 import java.util.HashMap;
 
@@ -117,7 +116,7 @@ public class GameServiceTests {
         // run test
         try {
             gameService.joinGame(new AuthData("testAuth1", "testUser1"), "WHITE", 1);
-            Assertions.assertEquals("testUser1", games.get(1).WhiteUsername());
+            Assertions.assertEquals("testUser1", games.get(1).whiteUsername());
         } catch (Throwable ex) {
             System.out.printf("Test Error: %s%n", ex.getMessage());
         }
@@ -138,7 +137,7 @@ public class GameServiceTests {
         // run test
         try {
             gameService.joinGame(new AuthData("badAuth", "testUser1"), "WHITE", 1);
-            Assertions.assertEquals("", games.get(1).WhiteUsername());
+            Assertions.assertEquals("", games.get(1).whiteUsername());
         } catch (Throwable ex) {
             System.out.printf("Test Error: %s%n", ex.getMessage());
         }
