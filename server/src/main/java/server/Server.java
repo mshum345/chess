@@ -110,7 +110,6 @@ public class Server {
 
         // Extract data from req body
         JsonObject requestBody = new Gson().fromJson(req.body(), JsonObject.class);
-        //String gameName = requestBody.get("gameName").getAsString();
         JsonElement gameNameElement = requestBody.get("gameName");
         String gameName = (gameNameElement != null && !gameNameElement.isJsonNull()) ? gameNameElement.getAsString() : null;
 
@@ -126,7 +125,8 @@ public class Server {
 
         // Extract data from req body
         JsonObject requestBody = new Gson().fromJson(req.body(), JsonObject.class);
-        String playerColor = requestBody.get("playerColor").getAsString();
+        JsonElement gameNameElement = requestBody.get("playerColor");
+        String playerColor = (gameNameElement != null && !gameNameElement.isJsonNull()) ? gameNameElement.getAsString() : null;
         int gameID = requestBody.get("gameID").getAsInt();
 
         // Make service call
