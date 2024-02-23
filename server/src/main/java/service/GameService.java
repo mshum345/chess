@@ -75,7 +75,7 @@ public class GameService {
             newGameData = new GameData(gameID, oldGameData.whiteUsername(), checkAuth.username(), oldGameData.gameName(), oldGame);
         }
         else {
-            // Join as observer
+            // Join as observer?
             newGameData = oldGameData;
         }
 
