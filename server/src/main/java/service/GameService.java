@@ -6,6 +6,7 @@ import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.GameData;
+import model.ResponseData;
 
 import javax.xml.crypto.Data;
 import java.util.Collection;
@@ -19,46 +20,54 @@ public class GameService {
         this.userDAO = userDAO;
     }
 
-    public Collection listGames(AuthData authData) throws DataAccessException {
+    public ResponseData listGames(AuthData authData) throws DataAccessException {
         var checkAuth = userDAO.getAuth(authData.authToken());
 
+        // Checks auth token
         if (checkAuth == null) {
-            throw new DataAccessException(401, "Error: unauthorized");
+            return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
         }
 
-        return gameDAO.getGames();
+        var games = gameDAO.getGames();
+        return new ResponseData(200, null, null, null, games, 0);
     }
 
-    public GameData createGame(AuthData authData, String gameName) throws DataAccessException {
+    public ResponseData createGame(AuthData authData, String gameName) throws DataAccessException {
         var checkAuth = userDAO.getAuth(authData.authToken());
 
+        // Checks auth token
         if (checkAuth == null) {
-            throw new DataAccessException(401, "Error: unauthorized");
+            return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
         }
+        var newGame = gameDAO.createGame(gameName);
 
-        return gameDAO.createGame(gameName);
+        return new ResponseData(200, null, null, null, null, newGame.gameID());
     }
 
-    public void joinGame(AuthData authData, String playerColor, int gameID) throws DataAccessException {
+    public ResponseData joinGame(AuthData authData, String playerColor, int gameID) throws DataAccessException {
         var checkAuth = userDAO.getAuth(authData.authToken());
         var oldGameData = gameDAO.getGame(gameID);
         ChessGame oldGame;
         GameData newGameData;
 
+        // Checks auth token
         if (checkAuth == null) {
-            throw new DataAccessException(401, "Error: unauthorized");
+            return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
         }
 
+        // WHITE
         if (playerColor.equals("WHITE")) {
             if (!oldGameData.WhiteUsername().equals(null)) {
-                throw new DataAccessException(403, "Error: already taken");
+                return new ResponseData(403, "Error: already taken", null, null, null, 0);
             }
             oldGame = oldGameData.game();
             newGameData = new GameData(gameID, authData.username(), oldGameData.BlackUsername(), oldGameData.gameName(), oldGame);
         }
+
+        // BLACK
         else if (playerColor.equals("BLACK")){
             if (!oldGameData.BlackUsername().equals(null)) {
-                throw new DataAccessException(403, "Error: already taken");
+                return new ResponseData(403, "Error: already taken", null, null, null, 0);
             }
             oldGame = oldGameData.game();
             newGameData = new GameData(gameID, oldGameData.WhiteUsername(), authData.username(), oldGameData.gameName(), oldGame);
@@ -69,5 +78,6 @@ public class GameService {
         }
 
         gameDAO.replaceGame(newGameData);
+        return new ResponseData(200, null, null, null, null, 0);
     }
 }

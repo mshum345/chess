@@ -3,6 +3,7 @@ package service;
 import dataAccess.DataAccessException;
 import dataAccess.UserDAO;
 import model.AuthData;
+import model.ResponseData;
 import model.UserData;
 
 import java.util.UUID;
@@ -14,12 +15,12 @@ public class UserService {
         this.userDAO = userDAO;
     }
 
-    public AuthData register(UserData userData) throws DataAccessException {
+    public ResponseData register(UserData userData) throws DataAccessException {
         var checkUser = userDAO.getUser(userData.username());
 
         // Check if username has already been taken
         if (checkUser != null) {
-            throw new DataAccessException(403, "Error: already taken");
+            return new ResponseData(403, "Error: already taken", null, null, null, 0);
         }
 
         // Generate AuthData and insert into users and auths
@@ -28,36 +29,33 @@ public class UserService {
         userDAO.addUser(userData);
         userDAO.addAuth(authData);
 
-        return authData;
+        return new ResponseData(200, null, authData.username(), authData.authToken(), null, 0);
     }
 
-    public AuthData login(UserData userData) throws DataAccessException {
+    public ResponseData login(UserData userData) throws DataAccessException {
         var checkUser = userDAO.getUser(userData.username());
-
-        // Check if user exists
-        if (checkUser == null) {
-            throw new DataAccessException(500, "Error: user does not exist");
-        }
 
         // Check if password matches
         if (!checkUser.password().equals(userData.password())) {
-            throw new DataAccessException(401, "Error: unauthorized");
+            return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
         }
 
         var authToken = UUID.randomUUID().toString();
         var newAuth = new AuthData(authToken, userData.username());
         userDAO.addAuth(newAuth);
 
-        return newAuth;
+        return new ResponseData(200, null, newAuth.username(), newAuth.authToken(), null, 0);
     }
 
-    public void logout(AuthData authData) throws DataAccessException {
+    public ResponseData logout(AuthData authData) throws DataAccessException {
         var checkAuth = userDAO.getAuth(authData.authToken());
 
         if (checkAuth == null) {
-            throw new DataAccessException(401, "Error: unauthorized");
+            return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
         }
 
         userDAO.deleteAuth(authData.authToken());
+
+        return new ResponseData(200, null, null, null, null, 0);
     }
 }

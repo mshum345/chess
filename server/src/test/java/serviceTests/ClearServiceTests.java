@@ -6,6 +6,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import service.ClearService;
 import java.util.HashMap;
 
@@ -16,6 +17,7 @@ public class ClearServiceTests {
     private HashMap<String, AuthData> auths;
     private HashMap<Integer, GameData> games;
 
+    @Test
     public void run() {
         // insert test data
         users.put("Bobby", new UserData("Bobby", "testPassword", "test@gmail.com"));
@@ -37,6 +39,5 @@ public class ClearServiceTests {
         } catch (Throwable ex) {
             System.out.printf("Unable to start server: %s%n", ex.getMessage());
         }
-
     }
 }

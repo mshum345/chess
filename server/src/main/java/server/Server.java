@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import dataAccess.*;
 import model.AuthData;
 import model.GameData;
+import model.ResponseData;
 import model.UserData;
 import service.ClearService;
 import service.GameService;
@@ -21,6 +22,7 @@ public class Server {
     private ClearService clearService;
     private UserService userService;
     private GameService gameService;
+    private ResponseData responseData;
 
     public Server() {
         var clearDAO = new MemoryClearDAO(users, auths, games);
@@ -29,6 +31,10 @@ public class Server {
         clearService = new ClearService(clearDAO);
         userService = new UserService(userDAO);
         gameService = new GameService(gameDAO, userDAO);
+    }
+
+    public static void main(String[] args) {
+        new Server().run(8080);
     }
 
     public int run(int desiredPort) {
@@ -51,8 +57,8 @@ public class Server {
 
     private Object clear(Request req, Response res) throws DataAccessException {
         // Make service call
-        clearService.ClearAll();
-        res.status(200);
+        responseData = clearService.ClearAll();
+        res.status(responseData.status());
         return "";
     }
 
@@ -61,9 +67,10 @@ public class Server {
         var userData = new Gson().fromJson(req.body(), UserData.class);
 
         // Make service call
-        var authData = userService.register(userData);
-        res.status(200);
-        return new Gson().toJson(authData);
+        responseData = userService.register(userData);
+        res.status(responseData.status());
+
+        return new Gson().toJson(responseData);
     }
 
     private Object login(Request req, Response res) throws DataAccessException {
@@ -71,9 +78,9 @@ public class Server {
         var userData = new Gson().fromJson(req.body(), UserData.class);
 
         // Make service call
-        var authData = userService.login(userData);
-        res.status(200);
-        return new Gson().toJson(authData);
+        responseData = userService.login(userData);
+        res.status(responseData.status());
+        return new Gson().toJson(responseData);
     }
 
     private Object logout(Request req, Response res) throws DataAccessException {
@@ -81,8 +88,8 @@ public class Server {
         var authData = new AuthData(req.headers("authorization"), null);
 
         // Make service call
-        userService.logout(authData);
-        res.status(200);
+        responseData = userService.logout(authData);
+        res.status(responseData.status());
         return "";
     }
 
@@ -91,10 +98,9 @@ public class Server {
         var authData = new AuthData(req.headers("authorization"), null);
 
         // Make service call
-        var list = gameService.listGames(authData).toArray();
-        res.type("application/json");
-        res.status(200);
-        return new Gson().toJson(Map.of("game", list));
+        responseData = gameService.listGames(authData);
+        res.status(responseData.status());
+        return new Gson().toJson(responseData);
     }
 
     private Object createGame(Request req, Response res) throws DataAccessException {
@@ -106,10 +112,9 @@ public class Server {
         String gameName = requestBody.get("gameName").getAsString();
 
         // Make service call
-        var newGame = gameService.createGame(authData, gameName);
-        var gameID = newGame.gameID();
-        res.status(200);
-        return new Gson().toJson(Map.of("gameID", gameID));
+        responseData = gameService.createGame(authData, gameName);
+        res.status(responseData.status());
+        return new Gson().toJson(responseData);
     }
 
     private Object joinGame(Request req, Response res) throws DataAccessException {
@@ -122,8 +127,8 @@ public class Server {
         int gameID = requestBody.get("gameID").getAsInt();
 
         // Make service call
-        gameService.joinGame(authData, playerColor, gameID);
-        res.status(200);
+        responseData = gameService.joinGame(authData, playerColor, gameID);
+        res.status(responseData.status());
         return "";
     }
 
