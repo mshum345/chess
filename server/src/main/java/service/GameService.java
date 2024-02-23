@@ -44,20 +44,26 @@ public class GameService {
     public ResponseData joinGame(AuthData authData, String playerColor, int gameID) throws DataAccessException {
         var checkAuth = userDAO.getAuth(authData.authToken());
         var oldGameData = gameDAO.getGame(gameID);
-        ChessGame oldGame;
-        GameData newGameData;
+
+        // Checks if bad request
+        if (oldGameData == null) {
+            return new ResponseData(400, "Error: bad request", null, null, null, null);
+        }
 
         // Checks auth token
         if (checkAuth == null) {
             return new ResponseData(401, "Error: unauthorized", null, null, null, null);
         }
 
+        ChessGame oldGame = oldGameData.game();
+        GameData newGameData;
+
         // WHITE
         if (playerColor.equals("WHITE")) {
             if (!oldGameData.whiteUsername().isEmpty()) {
                 return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
-            oldGame = oldGameData.game();
+
             newGameData = new GameData(gameID, checkAuth.username(), oldGameData.blackUsername(), oldGameData.gameName(), oldGame);
         }
 
@@ -66,7 +72,6 @@ public class GameService {
             if (!oldGameData.blackUsername().isEmpty()) {
                 return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
-            oldGame = oldGameData.game();
             newGameData = new GameData(gameID, oldGameData.whiteUsername(), checkAuth.username(), oldGameData.gameName(), oldGame);
         }
         else {

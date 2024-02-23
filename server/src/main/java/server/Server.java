@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dataAccess.*;
 import model.AuthData;
@@ -109,7 +110,9 @@ public class Server {
 
         // Extract data from req body
         JsonObject requestBody = new Gson().fromJson(req.body(), JsonObject.class);
-        String gameName = requestBody.get("gameName").getAsString();
+        //String gameName = requestBody.get("gameName").getAsString();
+        JsonElement gameNameElement = requestBody.get("gameName");
+        String gameName = (gameNameElement != null && !gameNameElement.isJsonNull()) ? gameNameElement.getAsString() : null;
 
         // Make service call
         responseData = gameService.createGame(authData, gameName);
