@@ -60,7 +60,7 @@ public class GameService {
 
         // WHITE
         if (playerColor.equals("WHITE")) {
-            if (!oldGameData.whiteUsername().isEmpty()) {
+            if (oldGameData.whiteUsername() != null) {
                 return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
 
@@ -69,7 +69,7 @@ public class GameService {
 
         // BLACK
         else if (playerColor.equals("BLACK")){
-            if (!oldGameData.blackUsername().isEmpty()) {
+            if (oldGameData.blackUsername() != null) {
                 return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
             newGameData = new GameData(gameID, oldGameData.whiteUsername(), checkAuth.username(), oldGameData.gameName(), oldGame);
