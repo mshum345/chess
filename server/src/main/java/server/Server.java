@@ -59,7 +59,7 @@ public class Server {
         // Make service call
         responseData = clearService.ClearAll();
         res.status(responseData.status());
-        return "";
+        return new Gson().toJson(responseData);
     }
 
     private Object register(Request req, Response res) throws DataAccessException {
@@ -90,7 +90,7 @@ public class Server {
         // Make service call
         responseData = userService.logout(authData);
         res.status(responseData.status());
-        return "";
+        return new Gson().toJson(responseData);
     }
 
     private Object listGames(Request req, Response res) throws DataAccessException {
@@ -129,7 +129,7 @@ public class Server {
         // Make service call
         responseData = gameService.joinGame(authData, playerColor, gameID);
         res.status(responseData.status());
-        return "";
+        return new Gson().toJson(responseData);
     }
 
     public int port() {

@@ -57,20 +57,20 @@ public class GameService {
 
         // WHITE
         if (playerColor.equals("WHITE")) {
-            if (!oldGameData.WhiteUsername().equals(null)) {
+            if (!oldGameData.WhiteUsername().isEmpty()) {
                 return new ResponseData(403, "Error: already taken", null, null, null, 0);
             }
             oldGame = oldGameData.game();
-            newGameData = new GameData(gameID, authData.username(), oldGameData.BlackUsername(), oldGameData.gameName(), oldGame);
+            newGameData = new GameData(gameID, checkAuth.username(), oldGameData.BlackUsername(), oldGameData.gameName(), oldGame);
         }
 
         // BLACK
         else if (playerColor.equals("BLACK")){
-            if (!oldGameData.BlackUsername().equals(null)) {
+            if (!oldGameData.BlackUsername().isEmpty()) {
                 return new ResponseData(403, "Error: already taken", null, null, null, 0);
             }
             oldGame = oldGameData.game();
-            newGameData = new GameData(gameID, oldGameData.WhiteUsername(), authData.username(), oldGameData.gameName(), oldGame);
+            newGameData = new GameData(gameID, oldGameData.WhiteUsername(), checkAuth.username(), oldGameData.gameName(), oldGame);
         }
         else {
             // Join as observer

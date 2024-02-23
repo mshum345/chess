@@ -12,7 +12,7 @@ public class MemoryGameDAO implements GameDAO{
     private HashMap<String, UserData> users;
     private HashMap<String, AuthData> auths;
     private HashMap<Integer, GameData> games;
-    private int nextID = 1;
+    private int nextID = 0;
 
     public MemoryGameDAO(HashMap<String, UserData> users, HashMap<String, AuthData> auths, HashMap<Integer, GameData> games) {
         this.users = users;
@@ -26,7 +26,7 @@ public class MemoryGameDAO implements GameDAO{
 
     public GameData createGame(String gameName) {
         nextID++;
-        var newGame = new GameData(nextID, null, null, gameName, new ChessGame());
+        var newGame = new GameData(nextID, "", "", gameName, new ChessGame());
         games.put(nextID, newGame);
         return newGame;
     }

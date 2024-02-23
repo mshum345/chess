@@ -35,8 +35,8 @@ public class UserService {
     public ResponseData login(UserData userData) throws DataAccessException {
         var checkUser = userDAO.getUser(userData.username());
 
-        // Check if password matches
-        if (!checkUser.password().equals(userData.password())) {
+        // Check if user exists and password matches
+        if (checkUser == null || !checkUser.password().equals(userData.password())) {
             return new ResponseData(401, "Error: unauthorized", null, null, null, 0);
         }
 
