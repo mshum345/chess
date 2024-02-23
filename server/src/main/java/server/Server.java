@@ -14,21 +14,20 @@ import service.UserService;
 import spark.*;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class Server {
-    private HashMap<String, UserData> users = new HashMap<>();
-    private HashMap<String, AuthData> auths  = new HashMap<>();
-    private HashMap<Integer, GameData> games  = new HashMap<>();
-    private ClearService clearService;
-    private UserService userService;
-    private GameService gameService;
+    private final ClearService clearService;
+    private final UserService userService;
+    private final GameService gameService;
     private ResponseData responseData;
 
     public Server() {
+        HashMap<String, UserData> users = new HashMap<>();
+        HashMap<String, AuthData> auths = new HashMap<>();
+        HashMap<Integer, GameData> games = new HashMap<>();
         var clearDAO = new MemoryClearDAO(users, auths, games);
-        var userDAO = new MemoryUserDAO(users, auths, games);
-        var gameDAO = new MemoryGameDAO(users, auths, games);
+        var userDAO = new MemoryUserDAO(users, auths);
+        var gameDAO = new MemoryGameDAO(games);
         clearService = new ClearService(clearDAO);
         userService = new UserService(userDAO);
         gameService = new GameService(gameDAO, userDAO);

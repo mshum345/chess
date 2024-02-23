@@ -5,7 +5,7 @@ import dataAccess.DataAccessException;
 import model.ResponseData;
 
 public class ClearService {
-    private ClearDAO clearDAO;
+    private final ClearDAO clearDAO;
 
     public ClearService(ClearDAO clearDAO) {
         this.clearDAO = clearDAO;

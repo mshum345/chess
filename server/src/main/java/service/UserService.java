@@ -9,7 +9,7 @@ import model.UserData;
 import java.util.UUID;
 
 public class UserService {
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
 
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;

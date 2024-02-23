@@ -9,8 +9,8 @@ import model.GameData;
 import model.ResponseData;
 
 public class GameService {
-    private GameDAO gameDAO;
-    private UserDAO userDAO;
+    private final GameDAO gameDAO;
+    private final UserDAO userDAO;
 
     public GameService(GameDAO gameDAO, UserDAO userDAO) {
         this.gameDAO = gameDAO;
@@ -60,7 +60,6 @@ public class GameService {
 
         // Checks if observer
         if (playerColor == null) {
-            newGameData = oldGameData;
             // join as observer
             return new ResponseData(200, null, null, null, null, null);
         }

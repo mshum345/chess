@@ -1,21 +1,17 @@
 package dataAccess;
 
 import model.AuthData;
-import model.GameData;
 import model.UserData;
 
 import java.util.HashMap;
 
 public class MemoryUserDAO implements UserDAO{
-    private HashMap<String, UserData> users;
-    private HashMap<String, AuthData> auths;
-    private HashMap<Integer, GameData> games;
-    int nextID = 1;
+    private final HashMap<String, UserData> users;
+    private final HashMap<String, AuthData> auths;
 
-    public MemoryUserDAO(HashMap<String, UserData> users, HashMap<String, AuthData> auths, HashMap<Integer, GameData> games) {
+    public MemoryUserDAO(HashMap<String, UserData> users, HashMap<String, AuthData> auths) {
         this.users = users;
         this.auths = auths;
-        this.games = games;
     }
 
     public void addUser(UserData userData) {

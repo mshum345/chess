@@ -1,12 +1,8 @@
 package serviceTests;
 
-import chess.ChessGame;
 import dataAccess.MemoryUserDAO;
 import model.AuthData;
-import model.GameData;
-import model.ResponseData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import service.UserService;
@@ -22,8 +18,7 @@ public class UserServiceTests {
         // establish test variables
         var users = new HashMap<String, UserData>();
         var auths = new HashMap<String, AuthData>();
-        var games = new HashMap<Integer, GameData>();
-        userDAO = new MemoryUserDAO(users, auths, games);
+        userDAO = new MemoryUserDAO(users, auths);
         userService = new UserService(userDAO);
 
         // run test
@@ -40,8 +35,7 @@ public class UserServiceTests {
         // establish test variables
         var users = new HashMap<String, UserData>();
         var auths = new HashMap<String, AuthData>();
-        var games = new HashMap<Integer, GameData>();
-        userDAO = new MemoryUserDAO(users, auths, games);
+        userDAO = new MemoryUserDAO(users, auths);
         userService = new UserService(userDAO);
 
         // run test
@@ -59,9 +53,8 @@ public class UserServiceTests {
         // establish test variables
         var users = new HashMap<String, UserData>();
         var auths = new HashMap<String, AuthData>();
-        var games = new HashMap<Integer, GameData>();
         users.put("testUser1", new UserData("testUser1", "testPass1", "test@gmail.com"));
-        userDAO = new MemoryUserDAO(users, auths, games);
+        userDAO = new MemoryUserDAO(users, auths);
         userService = new UserService(userDAO);
 
         // run test
@@ -78,9 +71,8 @@ public class UserServiceTests {
         // establish test variables
         var users = new HashMap<String, UserData>();
         var auths = new HashMap<String, AuthData>();
-        var games = new HashMap<Integer, GameData>();
         users.put("testUser1", new UserData("testUser1", "testPass1", "test@gmail.com"));
-        userDAO = new MemoryUserDAO(users, auths, games);
+        userDAO = new MemoryUserDAO(users, auths);
         userService = new UserService(userDAO);
 
         // run test
@@ -97,9 +89,8 @@ public class UserServiceTests {
         // establish test variables
         var users = new HashMap<String, UserData>();
         var auths = new HashMap<String, AuthData>();
-        var games = new HashMap<Integer, GameData>();
         auths.put("testAuth1", new AuthData("testAuth1", "testUser1"));
-        userDAO = new MemoryUserDAO(users, auths, games);
+        userDAO = new MemoryUserDAO(users, auths);
         userService = new UserService(userDAO);
 
         // run test
@@ -116,9 +107,8 @@ public class UserServiceTests {
         // establish test variables
         var users = new HashMap<String, UserData>();
         var auths = new HashMap<String, AuthData>();
-        var games = new HashMap<Integer, GameData>();
         auths.put("testAuth1", new AuthData("testAuth1", "testUser1"));
-        userDAO = new MemoryUserDAO(users, auths, games);
+        userDAO = new MemoryUserDAO(users, auths);
         userService = new UserService(userDAO);
 
         // run test

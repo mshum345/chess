@@ -27,8 +27,8 @@ public class GameServiceTests {
         var games = new HashMap<Integer, GameData>();
         auths.put("testAuth1", new AuthData("testAuth1", "testUser1"));
         games.put(1, new GameData(1, "Bobby", "Kate", "TestGameName", new ChessGame()));
-        gameDAO = new MemoryGameDAO(users, auths, games);
-        userDAO = new MemoryUserDAO(users, auths, games);
+        gameDAO = new MemoryGameDAO(games);
+        userDAO = new MemoryUserDAO(users, auths);
         gameService = new GameService(gameDAO, userDAO);
 
         // run test
@@ -48,8 +48,8 @@ public class GameServiceTests {
         var games = new HashMap<Integer, GameData>();
         auths.put("testAuth1", new AuthData("testAuth1", "testUser1"));
         games.put(1, new GameData(1, "Bobby", "Kate", "TestGameName", new ChessGame()));
-        gameDAO = new MemoryGameDAO(users, auths, games);
-        userDAO = new MemoryUserDAO(users, auths, games);
+        gameDAO = new MemoryGameDAO(games);
+        userDAO = new MemoryUserDAO(users, auths);
         gameService = new GameService(gameDAO, userDAO);
 
         // run test
@@ -68,8 +68,8 @@ public class GameServiceTests {
         var auths = new HashMap<String, AuthData>();
         var games = new HashMap<Integer, GameData>();
         auths.put("testAuth1", new AuthData("testAuth1", "testUser1"));
-        gameDAO = new MemoryGameDAO(users, auths, games);
-        userDAO = new MemoryUserDAO(users, auths, games);
+        gameDAO = new MemoryGameDAO(games);
+        userDAO = new MemoryUserDAO(users, auths);
         gameService = new GameService(gameDAO, userDAO);
 
         // run test
@@ -88,8 +88,8 @@ public class GameServiceTests {
         var auths = new HashMap<String, AuthData>();
         var games = new HashMap<Integer, GameData>();
         auths.put("testAuth1", new AuthData("testAuth1", "testUser1"));
-        gameDAO = new MemoryGameDAO(users, auths, games);
-        userDAO = new MemoryUserDAO(users, auths, games);
+        gameDAO = new MemoryGameDAO(games);
+        userDAO = new MemoryUserDAO(users, auths);
         gameService = new GameService(gameDAO, userDAO);
 
         // run test
@@ -109,8 +109,8 @@ public class GameServiceTests {
         var games = new HashMap<Integer, GameData>();
         auths.put("testAuth1", new AuthData("testAuth1", "testUser1"));
         games.put(1, new GameData(1, "", "", "TestGameName", new ChessGame()));
-        gameDAO = new MemoryGameDAO(users, auths, games);
-        userDAO = new MemoryUserDAO(users, auths, games);
+        gameDAO = new MemoryGameDAO(games);
+        userDAO = new MemoryUserDAO(users, auths);
         gameService = new GameService(gameDAO, userDAO);
 
         // run test
@@ -130,8 +130,8 @@ public class GameServiceTests {
         var games = new HashMap<Integer, GameData>();
         auths.put("testAuth1", new AuthData("testAuth1", "testUser1"));
         games.put(1, new GameData(1, "", "", "TestGameName", new ChessGame()));
-        gameDAO = new MemoryGameDAO(users, auths, games);
-        userDAO = new MemoryUserDAO(users, auths, games);
+        gameDAO = new MemoryGameDAO(games);
+        userDAO = new MemoryUserDAO(users, auths);
         gameService = new GameService(gameDAO, userDAO);
 
         // run test

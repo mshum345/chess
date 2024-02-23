@@ -11,8 +11,6 @@ import service.ClearService;
 import java.util.HashMap;
 
 public class ClearServiceTests {
-    private ClearService service;
-    private MemoryClearDAO dataAccess;
 
     @Test
     public void clearPos() {
@@ -30,8 +28,9 @@ public class ClearServiceTests {
         games.put(1, new GameData(1, "Bobby", "Kate", "TestGameName", new ChessGame()));
 
         // establish test variables
-        dataAccess = new MemoryClearDAO(users, auths, games);
-        service = new ClearService(dataAccess);
+        MemoryClearDAO dataAccess = new MemoryClearDAO(users, auths, games);
+
+        ClearService service = new ClearService(dataAccess);
 
         // run tests
         try {
