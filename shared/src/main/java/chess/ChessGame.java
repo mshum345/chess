@@ -66,7 +66,7 @@ public class ChessGame {
                 validMoves = InCheckMoves(TeamColor.WHITE, TeamColor.BLACK);
             }
             else {
-                LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
+                leaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
             }
         }
         else {
@@ -74,14 +74,14 @@ public class ChessGame {
                 validMoves = InCheckMoves(TeamColor.BLACK, TeamColor.WHITE);
             }
             else {
-                LeaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
+                leaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
             }
         }
 
         return validMoves;
     }
 
-    private void LeaveInCheckMoves(ChessBoard testBoard, ChessPosition myPosition, ChessPiece myPiece, ArrayList<ChessMove> validMoves) {
+    private void leaveInCheckMoves(ChessBoard testBoard, ChessPosition myPosition, ChessPiece myPiece, ArrayList<ChessMove> validMoves) {
         // get validMoves for the start piece
         var myMoves = myPiece.pieceMoves(testBoard, myPosition);
 
@@ -216,7 +216,6 @@ public class ChessGame {
         currentTurn = enemyColor;
         return staleMoves.isEmpty();
     }
-
 
     /**
      * Makes a move in a chess game
