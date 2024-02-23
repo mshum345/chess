@@ -58,6 +58,13 @@ public class GameService {
         ChessGame oldGame = oldGameData.game();
         GameData newGameData;
 
+        // Checks if observer
+        if (playerColor == null) {
+            newGameData = oldGameData;
+            // join as observer
+            return new ResponseData(200, null, null, null, null, null);
+        }
+
         // WHITE
         if (playerColor.equals("WHITE")) {
             if (oldGameData.whiteUsername() != null) {
@@ -68,15 +75,11 @@ public class GameService {
         }
 
         // BLACK
-        else if (playerColor.equals("BLACK")){
+        else {
             if (oldGameData.blackUsername() != null) {
                 return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
             newGameData = new GameData(gameID, oldGameData.whiteUsername(), checkAuth.username(), oldGameData.gameName(), oldGame);
-        }
-        else {
-            // Join as observer?
-            newGameData = oldGameData;
         }
 
         gameDAO.replaceGame(newGameData);
