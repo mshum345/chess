@@ -18,14 +18,6 @@ public class ChessPosition {
         this.col = col;
     }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public void setColumn(int col) {
-        this.col = col;
-    }
-
     /**
      * @return which row this position is in
      * 1 codes for the bottom row

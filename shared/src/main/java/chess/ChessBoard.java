@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -101,12 +100,12 @@ public class ChessBoard {
         }
     }
 
-    public void TestMove(ChessMove move, ChessPiece myPiece) {
+    public void testMove(ChessMove move, ChessPiece myPiece) {
         addPiece(move.getEndPosition(), myPiece);
         addPiece(move.getStartPosition(), null);
     }
 
-    public ChessPosition GetKingPos(ChessGame.TeamColor teamColor) {
+    public ChessPosition getKingPos(ChessGame.TeamColor teamColor) {
         for (var i = 1; i < 9; i++) {
             for (var j = 1; j < 9; j++) {
                 var tempPiece = getPiece(new ChessPosition(i, j));

@@ -72,55 +72,55 @@ public class ChessPiece {
 
         if (type == PieceType.BISHOP) {
             while(upL || upR || downL || downR) {
-                upL = BishopQueenRookMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
-                upR = BishopQueenRookMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
-                downL = BishopQueenRookMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
-                downR = BishopQueenRookMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
+                upL = bishopQueenRookMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
+                upR = bishopQueenRookMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
+                downL = bishopQueenRookMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
+                downR = bishopQueenRookMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
                 i++;
             }
         }
         else if (type == PieceType.KING) {
-            KingMoves(myPosition, board, new ChessPosition(row + 1, col), validMoves);
-            KingMoves(myPosition, board, new ChessPosition(row - 1, col), validMoves);
-            KingMoves(myPosition, board, new ChessPosition(row, col - 1), validMoves);
-            KingMoves(myPosition, board, new ChessPosition(row, col + 1), validMoves);
-            KingMoves(myPosition, board, new ChessPosition(row + 1, col - 1), validMoves);
-            KingMoves(myPosition, board, new ChessPosition(row + 1, col + 1), validMoves);
-            KingMoves(myPosition, board, new ChessPosition(row - 1, col - 1), validMoves);
-            KingMoves(myPosition, board, new ChessPosition(row - 1, col + 1), validMoves);
+            kingMoves(myPosition, board, new ChessPosition(row + 1, col), validMoves);
+            kingMoves(myPosition, board, new ChessPosition(row - 1, col), validMoves);
+            kingMoves(myPosition, board, new ChessPosition(row, col - 1), validMoves);
+            kingMoves(myPosition, board, new ChessPosition(row, col + 1), validMoves);
+            kingMoves(myPosition, board, new ChessPosition(row + 1, col - 1), validMoves);
+            kingMoves(myPosition, board, new ChessPosition(row + 1, col + 1), validMoves);
+            kingMoves(myPosition, board, new ChessPosition(row - 1, col - 1), validMoves);
+            kingMoves(myPosition, board, new ChessPosition(row - 1, col + 1), validMoves);
         }
         else if (type == PieceType.KNIGHT) {
-            KnightMoves(myPosition, board, new ChessPosition(row + 2, col - 1), validMoves);
-            KnightMoves(myPosition, board, new ChessPosition(row + 2, col + 1), validMoves);
-            KnightMoves(myPosition, board, new ChessPosition(row - 2, col - 1), validMoves);
-            KnightMoves(myPosition, board, new ChessPosition(row - 2, col + 1), validMoves);
-            KnightMoves(myPosition, board, new ChessPosition(row + 1, col - 2), validMoves);
-            KnightMoves(myPosition, board, new ChessPosition(row - 1, col - 2), validMoves);
-            KnightMoves(myPosition, board, new ChessPosition(row + 1, col + 2), validMoves);
-            KnightMoves(myPosition, board, new ChessPosition(row - 1, col + 2), validMoves);
+            knightMoves(myPosition, board, new ChessPosition(row + 2, col - 1), validMoves);
+            knightMoves(myPosition, board, new ChessPosition(row + 2, col + 1), validMoves);
+            knightMoves(myPosition, board, new ChessPosition(row - 2, col - 1), validMoves);
+            knightMoves(myPosition, board, new ChessPosition(row - 2, col + 1), validMoves);
+            knightMoves(myPosition, board, new ChessPosition(row + 1, col - 2), validMoves);
+            knightMoves(myPosition, board, new ChessPosition(row - 1, col - 2), validMoves);
+            knightMoves(myPosition, board, new ChessPosition(row + 1, col + 2), validMoves);
+            knightMoves(myPosition, board, new ChessPosition(row - 1, col + 2), validMoves);
         }
         else if (type == PieceType.PAWN) {
-            PawnMoves(myPosition, board, validMoves);
+            pawnMoves(myPosition, board, validMoves);
         }
         else if (type == PieceType.QUEEN) {
             while(up || down || left || right || upL || upR || downL || downR) {
-                up = BishopQueenRookMoves(up, myPosition, board, new ChessPosition(row + i, col), validMoves);
-                down = BishopQueenRookMoves(down, myPosition, board, new ChessPosition(row - i, col), validMoves);
-                left = BishopQueenRookMoves(left, myPosition, board, new ChessPosition(row, col - i), validMoves);
-                right = BishopQueenRookMoves(right, myPosition, board, new ChessPosition(row, col + i), validMoves);
-                upL = BishopQueenRookMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
-                upR = BishopQueenRookMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
-                downL = BishopQueenRookMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
-                downR = BishopQueenRookMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
+                up = bishopQueenRookMoves(up, myPosition, board, new ChessPosition(row + i, col), validMoves);
+                down = bishopQueenRookMoves(down, myPosition, board, new ChessPosition(row - i, col), validMoves);
+                left = bishopQueenRookMoves(left, myPosition, board, new ChessPosition(row, col - i), validMoves);
+                right = bishopQueenRookMoves(right, myPosition, board, new ChessPosition(row, col + i), validMoves);
+                upL = bishopQueenRookMoves(upL, myPosition, board, new ChessPosition(row + i, col - i), validMoves);
+                upR = bishopQueenRookMoves(upR, myPosition, board, new ChessPosition(row + i, col + i), validMoves);
+                downL = bishopQueenRookMoves(downL, myPosition, board, new ChessPosition(row - i, col - i), validMoves);
+                downR = bishopQueenRookMoves(downR, myPosition, board, new ChessPosition(row - i, col + i), validMoves);
                 i++;
             }
         }
         else {
             while(up || down || left || right) {
-                up = BishopQueenRookMoves(up, myPosition, board, new ChessPosition(row + i, col), validMoves);
-                down = BishopQueenRookMoves(down, myPosition, board, new ChessPosition(row - i, col), validMoves);
-                left = BishopQueenRookMoves(left, myPosition, board, new ChessPosition(row, col - i), validMoves);
-                right = BishopQueenRookMoves(right, myPosition, board, new ChessPosition(row, col + i), validMoves);
+                up = bishopQueenRookMoves(up, myPosition, board, new ChessPosition(row + i, col), validMoves);
+                down = bishopQueenRookMoves(down, myPosition, board, new ChessPosition(row - i, col), validMoves);
+                left = bishopQueenRookMoves(left, myPosition, board, new ChessPosition(row, col - i), validMoves);
+                right = bishopQueenRookMoves(right, myPosition, board, new ChessPosition(row, col + i), validMoves);
                 i++;
             }
         }
@@ -128,7 +128,7 @@ public class ChessPiece {
         return validMoves;
     }
 
-    private boolean BishopQueenRookMoves(boolean bool, ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
+    private boolean bishopQueenRookMoves(boolean bool, ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
         var targRow = targPos.getRow();
         var targCol = targPos.getColumn();
 
@@ -157,7 +157,7 @@ public class ChessPiece {
         return bool;
     }
 
-    private void KingMoves(ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
+    private void kingMoves(ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
         var targRow = targPos.getRow();
         var targCol = targPos.getColumn();
 
@@ -177,7 +177,7 @@ public class ChessPiece {
         }
     }
 
-    private void KnightMoves(ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
+    private void knightMoves(ChessPosition myPosition, ChessBoard board, ChessPosition targPos, ArrayList<ChessMove> validMoves) {
         var targRow = targPos.getRow();
         var targCol = targPos.getColumn();
 
@@ -197,7 +197,7 @@ public class ChessPiece {
         }
     }
 
-    private void PawnMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
+    private void pawnMoves(ChessPosition myPosition, ChessBoard board, ArrayList<ChessMove> validMoves) {
         var row = myPosition.getRow();
         var col = myPosition.getColumn();
         // white on bottom, black on top
@@ -343,7 +343,7 @@ public class ChessPiece {
         }
     }
 
-    public ArrayList<ChessMove> PawnAttackMoves(ChessBoard board, ChessPosition myPosition) {
+    public ArrayList<ChessMove> pawnAttackMoves(ChessBoard board, ChessPosition myPosition) {
         var validMoves = new ArrayList<ChessMove>();
         var row = myPosition.getRow();
         var col = myPosition.getColumn();

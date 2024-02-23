@@ -63,7 +63,7 @@ public class ChessGame {
 
         if (currentTurn == TeamColor.WHITE) {
             if (whiteCheck) {
-                validMoves = InCheckMoves(TeamColor.WHITE, TeamColor.BLACK);
+                validMoves = inCheckMoves(TeamColor.WHITE, TeamColor.BLACK);
             }
             else {
                 leaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
@@ -71,7 +71,7 @@ public class ChessGame {
         }
         else {
             if (blackCheck) {
-                validMoves = InCheckMoves(TeamColor.BLACK, TeamColor.WHITE);
+                validMoves = inCheckMoves(TeamColor.BLACK, TeamColor.WHITE);
             }
             else {
                 leaveInCheckMoves(testBoard, startPosition, myPiece, validMoves);
@@ -91,8 +91,8 @@ public class ChessGame {
             for (var move : myMoves) {
                 // set up variables
                 var tempBoard = new ChessBoard(testBoard);
-                tempBoard.TestMove(move, myPiece);
-                if (!CheckForCheck(TeamColor.WHITE, TeamColor.BLACK, tempBoard)) {
+                tempBoard.testMove(move, myPiece);
+                if (!checkForCheck(TeamColor.WHITE, TeamColor.BLACK, tempBoard)) {
                     validMoves.add(move);
                 }
             }
@@ -102,14 +102,14 @@ public class ChessGame {
             for (var move : myMoves) {
                 // set up variables
                 var tempBoard = new ChessBoard(testBoard);
-                tempBoard.TestMove(move, myPiece);
-                if (!CheckForCheck(TeamColor.BLACK, TeamColor.WHITE, tempBoard)) {
+                tempBoard.testMove(move, myPiece);
+                if (!checkForCheck(TeamColor.BLACK, TeamColor.WHITE, tempBoard)) {
                     validMoves.add(move);
                 }
             }
         }
     }
-    private ArrayList<ChessMove> GetAllAttackMoves(TeamColor teamColor, ChessBoard testBoard) {
+    private ArrayList<ChessMove> getAllAttackMoves(TeamColor teamColor, ChessBoard testBoard) {
         var attackMoves = new ArrayList<ChessMove>();
 
         // loop through every testBoard square
@@ -120,7 +120,7 @@ public class ChessGame {
                 if (tempPiece != null && tempPiece.getTeamColor() == teamColor) {
                     var tempMoves = new ArrayList<ChessMove>();
                     if (tempPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
-                        tempMoves = tempPiece.PawnAttackMoves(testBoard, tempPos);
+                        tempMoves = tempPiece.pawnAttackMoves(testBoard, tempPos);
                     }
                     else {
                         // get individual piece moves
@@ -138,29 +138,29 @@ public class ChessGame {
         return attackMoves;
     }
 
-    private void MakeStatusChanges(TeamColor myColor, TeamColor enemyColor) {
+    private void makeStatusChanges(TeamColor myColor, TeamColor enemyColor) {
         // Check for status changes then make those changes if needed
-        if (CheckForCheck(enemyColor, myColor, board)) {
+        if (checkForCheck(enemyColor, myColor, board)) {
             if (!isInCheck(enemyColor)) {
-                SetCheck(enemyColor);
+                setCheck(enemyColor);
             }
-            var checkMoves = InCheckMoves(enemyColor, myColor);
+            var checkMoves = inCheckMoves(enemyColor, myColor);
             // Checkmate
             if (checkMoves.isEmpty()) {
-                SetCheckmate(enemyColor);
+                setCheckmate(enemyColor);
             }
         }
         else {
             if (isInCheck(enemyColor)) {
-                SetCheck(enemyColor);
+                setCheck(enemyColor);
             }
-            if (CheckForStalemate(enemyColor, myColor)) {
-                SetStalemate(enemyColor);
+            if (checkForStalemate(enemyColor, myColor)) {
+                setStalemate(enemyColor);
             }
         }
     }
 
-    private void SetStalemate(TeamColor enemyColor) {
+    private void setStalemate(TeamColor enemyColor) {
         if (enemyColor == TeamColor.WHITE) {
             whiteStalemate = true;
         }
@@ -169,7 +169,7 @@ public class ChessGame {
         }
     }
 
-    private void SetCheckmate(TeamColor enemyColor) {
+    private void setCheckmate(TeamColor enemyColor) {
         if (enemyColor == TeamColor.WHITE) {
             whiteCheckmate = true;
         }
@@ -178,7 +178,7 @@ public class ChessGame {
         }
     }
 
-    private void SetCheck(TeamColor enemyColor) {
+    private void setCheck(TeamColor enemyColor) {
         if (enemyColor == TeamColor.WHITE) {
             whiteCheck = !whiteCheck;
         }
@@ -187,9 +187,9 @@ public class ChessGame {
         }
     }
 
-    private boolean CheckForCheck(TeamColor myColor, TeamColor enemyColor, ChessBoard testBoard) {
-        var kingPos = testBoard.GetKingPos(myColor);
-        var attackMoves = GetAllAttackMoves(enemyColor, testBoard);
+    private boolean checkForCheck(TeamColor myColor, TeamColor enemyColor, ChessBoard testBoard) {
+        var kingPos = testBoard.getKingPos(myColor);
+        var attackMoves = getAllAttackMoves(enemyColor, testBoard);
 
         for (var move : attackMoves) {
             var myPos = move.getEndPosition();
@@ -201,7 +201,7 @@ public class ChessGame {
         return false;
     }
 
-    private boolean CheckForStalemate(TeamColor myColor, TeamColor enemyColor) {
+    private boolean checkForStalemate(TeamColor myColor, TeamColor enemyColor) {
         currentTurn = myColor;
         var staleMoves = new ArrayList<ChessMove>();
         for (var i = 1; i < 9; i++) {
@@ -243,7 +243,7 @@ public class ChessGame {
 
             // check for check and fill validmoves
             if (isInCheck(myColor)) {
-                validMoves = InCheckMoves(myColor, enemyColor);
+                validMoves = inCheckMoves(myColor, enemyColor);
 
             } else {
                 validMoves = (ArrayList<ChessMove>) validMoves(myPos);
@@ -261,8 +261,8 @@ public class ChessGame {
                 }
 
                 // Make any new status changes
-                MakeStatusChanges(myColor, enemyColor);
-                MakeStatusChanges(enemyColor, myColor);
+                makeStatusChanges(myColor, enemyColor);
+                makeStatusChanges(enemyColor, myColor);
                 // Change turns
                 this.currentTurn = enemyColor;
             }
@@ -275,17 +275,17 @@ public class ChessGame {
         }
     }
 
-    private ArrayList<ChessMove> InCheckMoves(TeamColor myColor, TeamColor enemyColor) {
+    private ArrayList<ChessMove> inCheckMoves(TeamColor myColor, TeamColor enemyColor) {
         var checkMoves = new ArrayList<ChessMove>();
 
         if (currentTurn == myColor) {
-            var allMyMoves = GetAllMoves(myColor, board);
+            var allMyMoves = getAllMoves(myColor, board);
 
             for (var move : allMyMoves) {
                 var testBoard = new ChessBoard(board);
                 var myPiece = testBoard.getPiece(move.getStartPosition());
-                testBoard.TestMove(move, myPiece);
-                if (!CheckForCheck(myColor, enemyColor, testBoard)) {
+                testBoard.testMove(move, myPiece);
+                if (!checkForCheck(myColor, enemyColor, testBoard)) {
                     checkMoves.add(move);
                 }
             }
@@ -295,7 +295,7 @@ public class ChessGame {
         return checkMoves;
     }
 
-    private ArrayList<ChessMove> GetAllMoves(TeamColor teamColor, ChessBoard testBoard) {
+    private ArrayList<ChessMove> getAllMoves(TeamColor teamColor, ChessBoard testBoard) {
         ArrayList<ChessMove> allMoves = new ArrayList<>();
 
         // loop through every testBoard square
@@ -371,9 +371,9 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
-        MakeStatusChanges(TeamColor.WHITE, TeamColor.BLACK);
+        makeStatusChanges(TeamColor.WHITE, TeamColor.BLACK);
         currentTurn = TeamColor.BLACK;
-        MakeStatusChanges(TeamColor.BLACK, TeamColor.WHITE);
+        makeStatusChanges(TeamColor.BLACK, TeamColor.WHITE);
         currentTurn = TeamColor.WHITE;
     }
 

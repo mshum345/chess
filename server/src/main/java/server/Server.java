@@ -57,7 +57,7 @@ public class Server {
 
     private Object clear(Request req, Response res) throws DataAccessException {
         // Make service call
-        responseData = clearService.ClearAll();
+        responseData = clearService.clearAll();
         res.status(responseData.status());
         return new Gson().toJson(responseData);
     }

@@ -11,7 +11,7 @@ public class ClearService {
         this.clearDAO = clearDAO;
     }
 
-    public ResponseData ClearAll() throws DataAccessException {
+    public ResponseData clearAll() throws DataAccessException {
         clearDAO.clearDatabase();
         return new ResponseData(200, null, null, null, null, null);
     }

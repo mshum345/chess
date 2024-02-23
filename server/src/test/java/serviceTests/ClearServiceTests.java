@@ -34,7 +34,7 @@ public class ClearServiceTests {
 
         // run tests
         try {
-            service.ClearAll();
+            service.clearAll();
             Assertions.assertTrue(users.isEmpty() && auths.isEmpty() && games.isEmpty());
         } catch (Throwable ex) {
             System.out.printf("Test Error: %s%n", ex.getMessage());
