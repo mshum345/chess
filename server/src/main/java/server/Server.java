@@ -22,12 +22,17 @@ public class Server {
     private ResponseData responseData;
 
     public Server() {
-        HashMap<String, UserData> users = new HashMap<>();
-        HashMap<String, AuthData> auths = new HashMap<>();
-        HashMap<Integer, GameData> games = new HashMap<>();
-        var clearDAO = new MemoryClearDAO(users, auths, games);
-        var userDAO = new MemoryUserDAO(users, auths);
-        var gameDAO = new MemoryGameDAO(games);
+        SQLClearDAO clearDAO = null;
+        SQLUserDAO userDAO = null;
+        SQLGameDAO gameDAO = null;
+        try {
+            clearDAO = new SQLClearDAO();
+            userDAO = new SQLUserDAO();
+            gameDAO = new SQLGameDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         clearService = new ClearService(clearDAO);
         userService = new UserService(userDAO);
         gameService = new GameService(gameDAO, userDAO);
