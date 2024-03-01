@@ -32,13 +32,56 @@ public class DatabaseManager {
     }
 
     /**
-     * Creates the database if it does not already exist.
+     * Creates the database and tables if they do not already exist.
      */
     static void createDatabase() throws DataAccessException {
         try {
-            var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
             var conn = DriverManager.getConnection(connectionUrl, user, password);
-            try (var preparedStatement = conn.prepareStatement(statement)) {
+
+            // Create Database
+            try (var preparedStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS " + databaseName)) {
+                preparedStatement.executeUpdate();
+            }
+
+            // USE chess
+            try (var preparedStatement = conn.prepareStatement("USE chess")) {
+                preparedStatement.executeUpdate();
+            }
+
+            // Create users
+            try (var preparedStatement = conn.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS users (
+                    username VARCHAR(255) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) NOT NULL,
+                    PRIMARY KEY (username)
+                    );
+            """)) {
+                preparedStatement.executeUpdate();
+            }
+
+            // Create auths
+            try (var preparedStatement = conn.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS auths (
+                    authToken VARCHAR(255) NOT NULL,
+                    username VARCHAR(255) NOT NULL,
+                    PRIMARY KEY (authToken)
+                    );
+            """)) {
+                preparedStatement.executeUpdate();
+            }
+
+            // Create games
+            try (var preparedStatement = conn.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS games (
+                    gameID INT NOT NULL AUTO_INCREMENT,
+                    whiteUsername VARCHAR(255),
+                    blackUsername VARCHAR(255),
+                    gameName VARCHAR(255) NOT NULL,
+                    game TEXT,
+                    PRIMARY KEY (gameID)
+                    );
+            """)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {

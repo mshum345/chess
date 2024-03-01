@@ -43,19 +43,50 @@ public class SQLUserDAO implements UserDAO {
             }
         }
         catch (SQLException e) {
-            throw new DataAccessException(String.format("unable to clear database: %s", e.getMessage()));
+            throw new DataAccessException(String.format("unable to add user: %s", e.getMessage()));
         }
     }
 
     public void addAuth(AuthData authData) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("INSERT INTO auths (authToken, username) VALUES (?, ?)")) {
 
+                statement.setString(1, authData.authToken());
+                statement.setString(2, authData.username());
+                statement.executeQuery();
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(String.format("unable to add auth: %s", e.getMessage()));
+        }
     }
 
     public AuthData getAuth(String username) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement("SELECT * FROM auths WHERE username=?")) {
+
+            ps.setString(1, username);
+            var rs = ps.executeQuery();
+            if (rs.next()) {
+                var json = rs.getString("json");
+                return new Gson().fromJson(json, AuthData.class);
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(String.format("unable to get auth: %s", e.getMessage()));
+        }
         return null;
     }
 
     public void deleteAuth(String username) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement("DELETE * FROM auths WHERE username=?")) {
 
+            ps.setString(1, username);
+            ps.executeQuery();
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(String.format("unable to delete auth: %s", e.getMessage()));
+        }
     }
 }
