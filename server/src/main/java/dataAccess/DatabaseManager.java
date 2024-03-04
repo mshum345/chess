@@ -42,10 +42,16 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS " + databaseName)) {
                 preparedStatement.executeUpdate();
             }
+            catch (Throwable ex) {
+                System.out.println(ex.getMessage());
+            }
 
             // USE chess
             try (var preparedStatement = conn.prepareStatement("USE chess")) {
                 preparedStatement.executeUpdate();
+            }
+            catch (Throwable ex) {
+                System.out.println(ex.getMessage());
             }
 
             // Create users
