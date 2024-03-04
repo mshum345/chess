@@ -77,7 +77,7 @@ public class DatabaseManager {
                     gameID INT NOT NULL AUTO_INCREMENT,
                     whiteUsername VARCHAR(255),
                     blackUsername VARCHAR(255),
-                    gameName VARCHAR(255) NOT NULL,
+                    gameName VARCHAR(255),
                     game TEXT,
                     PRIMARY KEY (gameID)
                     );
