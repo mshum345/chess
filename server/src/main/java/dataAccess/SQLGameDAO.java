@@ -87,7 +87,7 @@ public class SQLGameDAO implements GameDAO {
             if (rs.next()) {
                 String fetchedWhiteUsername = rs.getString("whiteUsername");
                 String fetchedBlackUsername = rs.getString("blackUsername");
-                String fetchedGameName = rs.getString("blackUsername");
+                String fetchedGameName = rs.getString("gameName");
                 ChessGame fetchedGame = new Gson().fromJson(rs.getString("game"), ChessGame.class);
                 return new GameData(gameID,fetchedWhiteUsername, fetchedBlackUsername, fetchedGameName, fetchedGame);
             }
