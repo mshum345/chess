@@ -1,6 +1,5 @@
 package dataAccessTests;
 
-import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import dataAccess.SQLClearDAO;
 import dataAccess.SQLUserDAO;
@@ -193,9 +192,6 @@ public class UserDAOTests {
                 var ps = statement.executeUpdate();
             }
             try (var statement = conn.prepareStatement("INSERT INTO auths (authToken, username) VALUES ('testAuth', 'testUser')")) {
-                var ps = statement.executeUpdate();
-            }
-            try (var statement = conn.prepareStatement("INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES ('testUser1', 'testUser2', 'testName', 'testGame')")) {
                 var ps = statement.executeUpdate();
             }
         }
