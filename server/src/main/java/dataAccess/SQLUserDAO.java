@@ -20,8 +20,11 @@ public class SQLUserDAO implements UserDAO {
             ps.setString(1, username);
             var rs = ps.executeQuery();
             if (rs.next()) {
-                var json = rs.getString("json");
-                return new Gson().fromJson(json, UserData.class);
+                // Extract data from the result set
+                String fetchedUsername = rs.getString("username");
+                String fetchedHashedPassword = rs.getString("password");
+                String fetchedEmail = rs.getString("email");
+                return new UserData(fetchedUsername, fetchedHashedPassword, fetchedEmail);
             }
         }
         catch (SQLException e) {
@@ -39,7 +42,7 @@ public class SQLUserDAO implements UserDAO {
                 statement.setString(1, userData.username());
                 statement.setString(2, hashedPassword);
                 statement.setString(3, userData.email());
-                statement.executeQuery();
+                statement.executeUpdate();
             }
         }
         catch (SQLException e) {
@@ -53,7 +56,7 @@ public class SQLUserDAO implements UserDAO {
 
                 statement.setString(1, authData.authToken());
                 statement.setString(2, authData.username());
-                statement.executeQuery();
+                statement.executeUpdate();
             }
         }
         catch (SQLException e) {
@@ -68,8 +71,9 @@ public class SQLUserDAO implements UserDAO {
             ps.setString(1, username);
             var rs = ps.executeQuery();
             if (rs.next()) {
-                var json = rs.getString("json");
-                return new Gson().fromJson(json, AuthData.class);
+                String fetchedAuthToken = rs.getString("authToken");
+                String fetchedUsername = rs.getString("username");
+                return new AuthData(fetchedAuthToken, fetchedUsername);
             }
         }
         catch (SQLException e) {
@@ -83,7 +87,7 @@ public class SQLUserDAO implements UserDAO {
              var ps = conn.prepareStatement("DELETE * FROM auths WHERE username=?")) {
 
             ps.setString(1, username);
-            ps.executeQuery();
+            ps.executeUpdate();
         }
         catch (SQLException e) {
             throw new DataAccessException(String.format("unable to delete auth: %s", e.getMessage()));

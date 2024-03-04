@@ -10,13 +10,13 @@ public class SQLClearDAO implements ClearDAO {
 
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("DELETE FROM users")) {
-                statement.executeQuery();
+                statement.executeUpdate();
             }
             try (var statement = conn.prepareStatement("DELETE FROM auths")) {
-                statement.executeQuery();
+                statement.executeUpdate();
             }
             try (var statement = conn.prepareStatement("DELETE FROM games")) {
-                statement.executeQuery();
+                statement.executeUpdate();
             }
         }
         catch (SQLException e) {

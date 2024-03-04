@@ -5,6 +5,7 @@ import dataAccess.UserDAO;
 import model.AuthData;
 import model.ResponseData;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.UUID;
 
@@ -39,9 +40,10 @@ public class UserService {
 
     public ResponseData login(UserData userData) throws DataAccessException {
         var checkUser = userDAO.getUser(userData.username());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         // Check if user exists and password matches
-        if (checkUser == null || !checkUser.password().equals(userData.password())) {
+        if (checkUser == null || !encoder.matches(userData.password(), checkUser.password())) {
             return new ResponseData(401, "Error: unauthorized", null, null, null, null);
         }
 
