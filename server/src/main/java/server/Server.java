@@ -149,6 +149,7 @@ public class Server {
     }
 
     private void exceptionHandler(DataAccessException ex, Request req, Response res) {
+        System.out.println(ex.getMessage());
         res.status(500);
     }
 }

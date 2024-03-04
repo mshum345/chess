@@ -6,6 +6,7 @@ import model.AuthData;
 import model.GameData;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class SQLGameDAO implements GameDAO {
 
     public GameData createGame(String gameName) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
-             var ps = conn.prepareStatement("INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (null, null, ?, ?)")) {
+             var ps = conn.prepareStatement("INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (null, null, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
 
             var game = new Gson().toJson(new ChessGame());
             ps.setString(1, gameName);
@@ -70,6 +71,7 @@ public class SQLGameDAO implements GameDAO {
             ps.setString(2, gameData.blackUsername());
             ps.setString(3, gameData.gameName());
             ps.setString(4, gameJSON);
+            ps.setInt(5, gameData.gameID());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException(String.format("unable to update game: %s", e.getMessage()));
