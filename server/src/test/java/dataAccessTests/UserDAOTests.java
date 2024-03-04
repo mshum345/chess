@@ -75,6 +75,7 @@ public class UserDAOTests {
             try {
                 userDAO.addUser(new UserData("testUser", null, null));
             } catch (Throwable ex) {
+                //
             }
 
             // Run Tests
@@ -138,6 +139,7 @@ public class UserDAOTests {
             try {
                 userDAO.addAuth(new AuthData(null, "testUser"));
             } catch (Throwable ex) {
+                //
             }
 
             // Run Tests
@@ -157,6 +159,7 @@ public class UserDAOTests {
             try {
                 userDAO.deleteAuth("testAuth");
             } catch (Throwable ex) {
+                //
             }
 
             // Run Tests
@@ -176,6 +179,7 @@ public class UserDAOTests {
             try {
                 userDAO.deleteAuth("badAuth");
             } catch (Throwable ex) {
+                //
             }
 
             // Run Tests
@@ -189,10 +193,10 @@ public class UserDAOTests {
         // Insert dummy data
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("INSERT INTO users (username, password, email) VALUES ('testUser', 'testpass', 'testEmail')")) {
-                var ps = statement.executeUpdate();
+                statement.executeUpdate();
             }
             try (var statement = conn.prepareStatement("INSERT INTO auths (authToken, username) VALUES ('testAuth', 'testUser')")) {
-                var ps = statement.executeUpdate();
+                statement.executeUpdate();
             }
         }
         catch (Throwable ex) {

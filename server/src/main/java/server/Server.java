@@ -5,15 +5,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dataAccess.*;
 import model.AuthData;
-import model.GameData;
 import model.ResponseData;
 import model.UserData;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
 import spark.*;
-
-import java.util.HashMap;
 
 public class Server {
     private final ClearService clearService;
@@ -22,9 +19,9 @@ public class Server {
     private ResponseData responseData;
 
     public Server() {
-        SQLClearDAO clearDAO = null;
-        SQLUserDAO userDAO = null;
-        SQLGameDAO gameDAO = null;
+        SQLClearDAO clearDAO;
+        SQLUserDAO userDAO;
+        SQLGameDAO gameDAO;
         try {
             clearDAO = new SQLClearDAO();
             userDAO = new SQLUserDAO();

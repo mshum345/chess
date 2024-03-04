@@ -1,6 +1,5 @@
 package dataAccessTests;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 import dataAccess.DatabaseManager;
 import dataAccess.SQLClearDAO;
 import org.junit.jupiter.api.Assertions;
@@ -43,13 +42,13 @@ public class ClearDAOTests {
         // Insert dummy data
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("INSERT INTO users (username, password, email) VALUES ('testUser', 'testpass', 'testEmail')")) {
-                var ps = statement.executeUpdate();
+                statement.executeUpdate();
             }
             try (var statement = conn.prepareStatement("INSERT INTO auths (authToken, username) VALUES ('testAuth', 'testUser')")) {
-                var ps = statement.executeUpdate();
+                statement.executeUpdate();
             }
             try (var statement = conn.prepareStatement("INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES ('testUser1', 'testUser2', 'testName', 'testGame')")) {
-                var ps = statement.executeUpdate();
+                statement.executeUpdate();
             }
         }
         catch (Throwable ex) {

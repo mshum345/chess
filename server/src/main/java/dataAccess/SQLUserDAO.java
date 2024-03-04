@@ -1,9 +1,7 @@
 package dataAccess;
 
-import com.google.gson.Gson;
 import model.AuthData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.SQLException;

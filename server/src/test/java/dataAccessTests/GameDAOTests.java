@@ -103,6 +103,7 @@ public class GameDAOTests {
             try {
                 gameDAO.replaceGame(new GameData(1, "testWhite", null, "testName", null));
             } catch (Throwable ex) {
+                //
             }
             // Run Tests
             Assertions.assertNull(gameDAO.getGame(1).whiteUsername());
@@ -146,7 +147,7 @@ public class GameDAOTests {
         // Insert dummy data
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES ('testUser1', 'testUser2', 'testName', 'testGame')")) {
-                var ps = statement.executeUpdate();
+                statement.executeUpdate();
             }
         }
         catch (Throwable ex) {
