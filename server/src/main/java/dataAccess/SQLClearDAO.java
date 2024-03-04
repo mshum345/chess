@@ -18,6 +18,10 @@ public class SQLClearDAO implements ClearDAO {
             try (var statement = conn.prepareStatement("DELETE FROM games")) {
                 statement.executeUpdate();
             }
+            // Reset auto-increment sequence for gameID column in the games table
+            try (var statement = conn.prepareStatement("ALTER TABLE games AUTO_INCREMENT = 1")) {
+                statement.executeUpdate();
+            }
         }
         catch (SQLException e) {
             throw new DataAccessException(String.format("unable to clear database: %s", e.getMessage()));
