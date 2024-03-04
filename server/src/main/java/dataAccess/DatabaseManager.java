@@ -44,7 +44,7 @@ public class DatabaseManager {
             }
 
             // USE chess
-            try (var preparedStatement = conn.prepareStatement("USE chess")) {
+            try (var preparedStatement = conn.prepareStatement("USE " + databaseName)) {
                 preparedStatement.executeUpdate();
             }
 
