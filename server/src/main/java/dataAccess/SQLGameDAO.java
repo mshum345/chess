@@ -6,14 +6,35 @@ import model.AuthData;
 import model.GameData;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 public class SQLGameDAO implements GameDAO {
     public SQLGameDAO() throws DataAccessException {
         DatabaseManager.createDatabase();
     }
-    public Collection getGames() {
-        return null;
+    public Collection getGames() throws DataAccessException {
+        List<GameData> games = new ArrayList<>();
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement("SELECT * FROM games")) {
+
+            try (var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int gameId = rs.getInt("gameID");
+                    String whiteUsername = rs.getString("whiteUsername");
+                    String blackUsername = rs.getString("blackUsername");
+                    String gameName = rs.getString("gameName");
+
+                    // Create a new GameData object for each row and add it to the list
+                    games.add(new GameData(gameId, whiteUsername, blackUsername, gameName, null));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(String.format("unable to get all games: %s", e.getMessage()));
+        }
+        return games;
     }
 
     public GameData createGame(String gameName) throws DataAccessException {
@@ -40,8 +61,19 @@ public class SQLGameDAO implements GameDAO {
         }
     }
 
-    public void replaceGame(GameData gameData) {
+    public void replaceGame(GameData gameData) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement("UPDATE games SET whiteUsername = ?, blackUsername = ?, gameName = ?, game = ? WHERE gameID = ?")) {
 
+            var gameJSON = new Gson().toJson(gameData.game());
+            ps.setString(1, gameData.whiteUsername());
+            ps.setString(2, gameData.blackUsername());
+            ps.setString(3, gameData.gameName());
+            ps.setString(4, gameJSON);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(String.format("unable to update game: %s", e.getMessage()));
+        }
     }
 
     public GameData getGame(int gameID) throws DataAccessException {
