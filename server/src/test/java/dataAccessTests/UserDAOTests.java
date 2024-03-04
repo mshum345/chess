@@ -189,6 +189,26 @@ public class UserDAOTests {
         }
     }
 
+    @Test
+    public void DeleteAuthNeg2() {
+        // Run methods
+        try {
+            // Test Prep
+            clearDAO.clearDatabase();
+            InsertDummyData();
+            try {
+                userDAO.deleteAuth("badAuth2");
+            } catch (Throwable ex) {
+                //
+            }
+
+            // Run Tests
+            Assertions.assertNotNull(userDAO.getAuth("testAuth"));
+        } catch (Throwable ex) {
+            System.out.printf("Test Error: %s%n", ex.getMessage());
+        }
+    }
+
     public void InsertDummyData() {
         // Insert dummy data
         try (var conn = DatabaseManager.getConnection()) {
