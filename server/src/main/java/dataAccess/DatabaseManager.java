@@ -43,7 +43,7 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
             catch (Throwable ex) {
-                System.out.println(ex.getMessage());
+                throw new DataAccessException(ex.getMessage());
             }
 
             // USE chess
@@ -51,7 +51,7 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
             catch (Throwable ex) {
-                System.out.println(ex.getMessage());
+                throw new DataAccessException(ex.getMessage());
             }
 
             // Create users
