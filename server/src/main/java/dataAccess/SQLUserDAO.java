@@ -64,11 +64,11 @@ public class SQLUserDAO implements UserDAO {
         }
     }
 
-    public AuthData getAuth(String username) throws DataAccessException {
+    public AuthData getAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
-             var ps = conn.prepareStatement("SELECT * FROM auths WHERE username=?")) {
+             var ps = conn.prepareStatement("SELECT * FROM auths WHERE authToken=?")) {
 
-            ps.setString(1, username);
+            ps.setString(1, authToken);
             var rs = ps.executeQuery();
             if (rs.next()) {
                 String fetchedAuthToken = rs.getString("authToken");
@@ -82,11 +82,11 @@ public class SQLUserDAO implements UserDAO {
         return null;
     }
 
-    public void deleteAuth(String username) throws DataAccessException {
+    public void deleteAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
-             var ps = conn.prepareStatement("DELETE * FROM auths WHERE username=?")) {
+             var ps = conn.prepareStatement("DELETE FROM auths WHERE authToken=?")) {
 
-            ps.setString(1, username);
+            ps.setString(1, authToken);
             ps.executeUpdate();
         }
         catch (SQLException e) {
