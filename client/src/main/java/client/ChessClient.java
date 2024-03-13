@@ -32,11 +32,11 @@ public class ChessClient {
             }
             else {
                 return switch (cmd) {
-                    case "logout" -> login(params);
-                    case "create game" -> register(params);
-                    case "list games" -> register(params);
-                    case "join game" -> register(params);
-                    case "join observer" -> register(params);
+                    case "logout" -> logout(params);
+                    case "create game" -> createGame(params);
+                    case "list games" -> listGames(params);
+                    case "join game" -> joinGame(params);
+                    case "join observer" -> joinObserver(params);
                     case "quit" -> "quit";
                     default -> postHelp();
                 };
@@ -44,15 +44,6 @@ public class ChessClient {
         } catch (Throwable ex) {
             return ex.getMessage();
         }
-    }
-
-    public String login(String... params) throws Exception {
-        if (params.length >= 1) {
-            state = true;
-            var visitorName = String.join("-", params);
-            return String.format("You signed in as %s.", visitorName);
-        }
-        throw new Exception("Expected: <yourname>");
     }
 
     public String register(String... params) throws Exception {
@@ -64,9 +55,36 @@ public class ChessClient {
         throw new Exception("Expected: <yourname>");
     }
 
+    public String login(String... params) throws Exception {
+        if (params.length >= 1) {
+            state = true;
+            var visitorName = String.join("-", params);
+            return String.format("You signed in as %s.", visitorName);
+        }
+        throw new Exception("Expected: <yourname>");
+    }
+
+    public String logout(String... params) throws Exception {
+        return "";
+    }
+
+    private String createGame(String[] params) {
+        return "";
+    }
+
+    private String listGames(String[] params) {
+        return "";
+    }
+
+    private String joinGame(String[] params) {
+        return "";
+    }
+
+    private String joinObserver(String[] params) {
+        return "";
+    }
+
     public boolean getState() {
         return state;
     }
-
-
 }
