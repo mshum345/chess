@@ -10,11 +10,24 @@ public class ChessClient {
     }
 
     public String preHelp() {
-        return "PreHELP";
+        return """
+                    register <USERNAME> <PASSWORD> <EMAIL> - to create an account
+                    login <USERNAME> <PASSWORD> - to play chess
+                    quit - quit playing chess
+                    help - help with possible commands
+                    """;
     }
 
     public String postHelp() {
-        return "PostHELP";
+        return """
+                create <GAMENAME> - to create a new game
+                list - lists all games
+                join <ID> [WHITE|BLACK|<empty>] - joins a game as a player
+                observe <ID> - joins a game as an observer
+                logout - logs you out
+                quit - quit playing chess
+                help - help with possible commands
+                """;
     }
 
     public String eval(String input) {
