@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ChessClient {
     private final String serverUrl;
-    private boolean state = false;
+    private boolean loggedIn = false;
     public ChessClient(String url) {
         this.serverUrl = url;
     }
@@ -42,7 +42,7 @@ public class ChessClient {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            if (state == false) {
+            if (loggedIn == false) {
                 return switch (cmd) {
                     case "login" -> login(params);
                     case "register" -> register(params);
@@ -88,7 +88,6 @@ public class ChessClient {
         URL fullUrl = new URL(serverUrl + "/user");
         HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
         http.setRequestMethod("POST");
-        http.setRequestProperty("Content-Type", "application/json");
         http.setDoOutput(true);
 
         // Write out the body
@@ -103,24 +102,57 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            state = true;
-            return "Register User Success";
+            loggedIn = true;
+            return "Register Success";
         } else {
             return "Failed to register. HTTP error code: " + responseCode;
         }
     }
 
     public String login(String... params) throws Exception {
-        if (params.length >= 1) {
-            state = true;
-            var visitorName = String.join("-", params);
-            return String.format("You signed in as %s.", visitorName);
+        // Specify the endpoint
+        URL fullUrl = new URL(serverUrl + "/session");
+        HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
+        http.setRequestMethod("POST");
+        http.setDoOutput(true);
+
+        // Write out the body
+        var body = Map.of("username", params[0], "password", params[1]);
+        try (var outputStream = http.getOutputStream()) {
+            var jsonBody = new Gson().toJson(body);
+            outputStream.write(jsonBody.getBytes());
         }
-        throw new Exception("Expected: <yourname>");
+
+        // Make request
+        int responseCode = http.getResponseCode();
+
+        // Check if the request was successful
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            loggedIn = true;
+            return "Login Success";
+        } else {
+            return "Failed to login. HTTP error code: " + responseCode;
+        }
     }
 
     public String logout(String... params) throws Exception {
-        return "";
+        // Specify the endpoint
+        URL fullUrl = new URL(serverUrl + "/session");
+        HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
+        http.setRequestMethod("DELETE");
+        http.setRequestProperty("authorization", params[0]);
+        http.setDoOutput(true);
+
+        // Make request
+        int responseCode = http.getResponseCode();
+
+        // Check if the request was successful
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            loggedIn = false;
+            return "Logout Success";
+        } else {
+            return "Failed to logout. HTTP error code: " + responseCode;
+        }
     }
 
     private String createGame(String[] params) {
@@ -140,6 +172,6 @@ public class ChessClient {
     }
 
     public boolean getState() {
-        return state;
+        return loggedIn;
     }
 }
