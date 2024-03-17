@@ -66,34 +66,48 @@ public class ChessClient {
         }
     }
 
-    public void clearDatabase() throws Exception {
-        // Specify the full URL
+    public String clearDatabase() throws Exception {
+        // Specify the endpoint
         URL fullUrl = new URL(serverUrl + "/db");
-
-        // Specify the desired endpoint and make request
         HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
         http.setRequestMethod("DELETE");
+
+        // Make request
         int responseCode = http.getResponseCode();
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            // Output the response body
-            try (InputStream respBody = http.getInputStream()) {
-                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-                System.out.println(new Gson().fromJson(inputStreamReader, Map.class));
-            }
+            return "Clear Database Success";
         } else {
-            System.err.println("Failed to clear database. HTTP error code: " + responseCode);
+            return "Failed to clear database. HTTP error code: " + responseCode;
         }
     }
 
     public String register(String... params) throws Exception {
-        if (params.length >= 1) {
-            state = true;
-            var visitorName = String.join("-", params);
-            return String.format("You signed in as %s.", visitorName);
+        // Specify the endpoint
+        URL fullUrl = new URL(serverUrl + "/user");
+        HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
+        http.setRequestMethod("POST");
+        http.setRequestProperty("Content-Type", "application/json");
+        http.setDoOutput(true);
+
+        // Write out the body
+        var body = Map.of("username", params[0], "password", params[1], "email", params[2]);
+        try (var outputStream = http.getOutputStream()) {
+            var jsonBody = new Gson().toJson(body);
+            outputStream.write(jsonBody.getBytes());
         }
-        throw new Exception("Expected: <yourname>");
+
+        // Make request
+        int responseCode = http.getResponseCode();
+
+        // Check if the request was successful
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            state = true;
+            return "Register User Success";
+        } else {
+            return "Failed to register. HTTP error code: " + responseCode;
+        }
     }
 
     public String login(String... params) throws Exception {
