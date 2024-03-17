@@ -1,6 +1,13 @@
 package client;
 
+import com.google.gson.Gson;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Map;
 
 public class ChessClient {
     private final String serverUrl;
@@ -56,6 +63,27 @@ public class ChessClient {
             }
         } catch (Throwable ex) {
             return ex.getMessage();
+        }
+    }
+
+    public void clearDatabase() throws Exception {
+        // Specify the full URL
+        URL fullUrl = new URL(serverUrl + "/db");
+
+        // Specify the desired endpoint and make request
+        HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
+        http.setRequestMethod("DELETE");
+        int responseCode = http.getResponseCode();
+
+        // Check if the request was successful
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            // Output the response body
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+                System.out.println(new Gson().fromJson(inputStreamReader, Map.class));
+            }
+        } else {
+            System.err.println("Failed to clear database. HTTP error code: " + responseCode);
         }
     }
 
