@@ -10,8 +10,8 @@ public class Repl {
     }
 
     public void run() {
-        System.out.println("\uD83D\uDC36 Welcome to the Chess Client. Sign in to start.");
-        System.out.print(client.preHelp());
+        System.out.println("\uD83D\uDC36 Welcome to the Chess Client. Log in to start.");
+        System.out.println(client.preHelp());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -22,7 +22,7 @@ public class Repl {
 
             try {
                 result = client.eval(line);
-                System.out.print(result);
+                System.out.println(result);
             } catch (Throwable e) {
                 System.out.print(e.getMessage());
             }

@@ -6,12 +6,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 
 public class ChessClient {
     private final String serverUrl;
     private boolean loggedIn = false;
+    private String authToken;
     public ChessClient(String url) {
         this.serverUrl = url;
     }
@@ -21,8 +23,7 @@ public class ChessClient {
                     register <USERNAME> <PASSWORD> <EMAIL> - to create an account
                     login <USERNAME> <PASSWORD> - to play chess
                     quit - quit playing chess
-                    help - help with possible commands
-                    """;
+                    help - help with possible commands""";
     }
 
     public String postHelp() {
@@ -33,8 +34,7 @@ public class ChessClient {
                 observe <ID> - joins a game as an observer
                 logout - logs you out
                 quit - quit playing chess
-                help - help with possible commands
-                """;
+                help - help with possible commands""";
     }
 
     public String eval(String input) {
@@ -56,7 +56,7 @@ public class ChessClient {
                     case "create game" -> createGame(params);
                     case "list games" -> listGames(params);
                     case "join game" -> joinGame(params);
-                    case "join observer" -> joinObserver(params);
+                    case "join observer" -> joinGame(params);
                     case "quit" -> "quit";
                     default -> postHelp();
                 };
@@ -102,8 +102,14 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            loggedIn = true;
-            return "Register Success";
+            // Read response body
+            try (InputStream inputStream = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
+                authToken = responseMap.get("authToken");
+                loggedIn = true;
+                return "Register Success.";
+            }
         } else {
             return "Failed to register. HTTP error code: " + responseCode;
         }
@@ -128,8 +134,13 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            loggedIn = true;
-            return "Login Success";
+            try (InputStream inputStream = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
+                authToken = responseMap.get("authToken");
+                loggedIn = true;
+                return "Login Success.";
+            }
         } else {
             return "Failed to login. HTTP error code: " + responseCode;
         }
@@ -140,7 +151,7 @@ public class ChessClient {
         URL fullUrl = new URL(serverUrl + "/session");
         HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
         http.setRequestMethod("DELETE");
-        http.setRequestProperty("authorization", params[0]);
+        http.setRequestProperty("authorization", authToken);
         http.setDoOutput(true);
 
         // Make request
@@ -155,20 +166,95 @@ public class ChessClient {
         }
     }
 
-    private String createGame(String[] params) {
-        return "";
+    private String createGame(String[] params) throws Exception {
+        // Specify the endpoint
+        URL fullUrl = new URL(serverUrl + "/game");
+        HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
+        http.setRequestMethod("POST");
+        http.setDoOutput(true);
+
+        // Write out the body
+        var body = Map.of("gameName", params[0]);
+        try (var outputStream = http.getOutputStream()) {
+            var jsonBody = new Gson().toJson(body);
+            outputStream.write(jsonBody.getBytes());
+        }
+
+        // Make request
+        int responseCode = http.getResponseCode();
+
+        // Check if the request was successful
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            // Read response body
+            try (InputStream inputStream = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
+                var gameID = responseMap.get("gameID");
+                return "Game Creation Success. GameID: " + gameID;
+            }
+        } else {
+            return "Failed to register. HTTP error code: " + responseCode;
+        }
     }
 
-    private String listGames(String[] params) {
-        return "";
+    private String listGames(String[] params) throws Exception {
+        // Specify the endpoint
+        URL fullUrl = new URL(serverUrl + "/game");
+        HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
+        http.setRequestMethod("GET");
+        http.setRequestProperty("authorization", authToken);
+        http.setDoOutput(true);
+
+        // Make request
+        int responseCode = http.getResponseCode();
+
+        // Check if the request was successful
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            // Read response body
+            try (InputStream inputStream = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
+                return "Games: " + responseMap;
+            }
+        } else {
+            return "Failed to list games. HTTP error code: " + responseCode;
+        }
     }
 
-    private String joinGame(String[] params) {
-        return "";
-    }
+    private String joinGame(String[] params) throws Exception {
+        // Specify the endpoint
+        URL fullUrl = new URL(serverUrl + "/game");
+        HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
+        http.setRequestMethod("PUT");
+        http.setRequestProperty("authorization", authToken);
+        http.setDoOutput(true);
 
-    private String joinObserver(String[] params) {
-        return "";
+        // Handle join observer
+        var playerColor = "";
+        if (params.length == 2) {
+            playerColor = params[1];
+        }
+
+        // Write out the body
+        var body = Map.of("gameID", params[0], "playerColor", playerColor);
+        try (var outputStream = http.getOutputStream()) {
+            var jsonBody = new Gson().toJson(body);
+            outputStream.write(jsonBody.getBytes());
+        }
+
+        // Make request
+        int responseCode = http.getResponseCode();
+
+        // Check if the request was successful
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            try (InputStream inputStream = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
+                return "Join Game Success.";
+            }
+        } else {
+            return "Failed to Join Game. HTTP error code: " + responseCode;
+        }
     }
 
     public boolean getState() {
