@@ -53,10 +53,10 @@ public class ChessClient {
             else {
                 return switch (cmd) {
                     case "logout" -> logout(params);
-                    case "create game" -> createGame(params);
-                    case "list games" -> listGames(params);
-                    case "join game" -> joinGame(params);
-                    case "join observer" -> joinGame(params);
+                    case "create" -> createGame(params);
+                    case "list" -> listGames(params);
+                    case "join" -> joinGame(params);
+                    case "observe" -> joinGame(params);
                     case "quit" -> "quit";
                     default -> postHelp();
                 };
@@ -171,6 +171,7 @@ public class ChessClient {
         URL fullUrl = new URL(serverUrl + "/game");
         HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
         http.setRequestMethod("POST");
+        http.setRequestProperty("authorization", authToken);
         http.setDoOutput(true);
 
         // Write out the body
@@ -185,15 +186,9 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            // Read response body
-            try (InputStream inputStream = http.getInputStream()) {
-                InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
-                var gameID = responseMap.get("gameID");
-                return "Game Creation Success. GameID: " + gameID;
-            }
+            return "Game Creation Success.";
         } else {
-            return "Failed to register. HTTP error code: " + responseCode;
+            return "Failed to create game. HTTP error code: " + responseCode;
         }
     }
 
@@ -247,11 +242,7 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            try (InputStream inputStream = http.getInputStream()) {
-                InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
-                return "Join Game Success.";
-            }
+            return "Join Game Success.";
         } else {
             return "Failed to Join Game. HTTP error code: " + responseCode;
         }
