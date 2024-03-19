@@ -160,7 +160,7 @@ public class ChessClient {
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
             loggedIn = false;
-            return "Logout Success";
+            return "Logout Success.";
         } else {
             return "Failed to logout. HTTP error code: " + responseCode;
         }
