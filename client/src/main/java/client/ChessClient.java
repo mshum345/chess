@@ -166,7 +166,7 @@ public class ChessClient {
         }
     }
 
-    private String createGame(String[] params) throws Exception {
+    public String createGame(String... params) throws Exception {
         // Specify the endpoint
         URL fullUrl = new URL(serverUrl + "/game");
         HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
@@ -192,7 +192,7 @@ public class ChessClient {
         }
     }
 
-    private String listGames(String[] params) throws Exception {
+    public String listGames(String... params) throws Exception {
         // Specify the endpoint
         URL fullUrl = new URL(serverUrl + "/game");
         HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();
@@ -216,7 +216,7 @@ public class ChessClient {
         }
     }
 
-    private String joinGame(String[] params) throws Exception {
+    public String joinGame(String... params) throws Exception {
         // Specify the endpoint
         URL fullUrl = new URL(serverUrl + "/game");
         HttpURLConnection http = (HttpURLConnection) fullUrl.openConnection();

@@ -1,11 +1,8 @@
 package clientTests;
 
 import client.ChessClient;
-import com.google.gson.Gson;
 import dataAccess.SQLGameDAO;
 import dataAccess.SQLUserDAO;
-import model.ResponseData;
-import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
 
@@ -78,4 +75,64 @@ public class ServerFacadeTests {
         Assertions.assertEquals("Failed to logout. HTTP error code: 401", client.logout());
     }
 
+    @Test
+    public void createGamePos() throws Exception {
+        client.clearDatabase();
+        client.createGame("testGame1");
+        Assertions.assertNotNull(gameDAO.getGames());
+    }
+
+    @Test
+    public void createGameNeg() throws Exception {
+        client.clearDatabase();
+        client.register("testUser1", "testPass1", "testEmail");
+        Assertions.assertThrows(Exception.class, () -> {
+            client.createGame(null); // Pass null parameters
+        });
+    }
+
+    @Test
+    public void listGamesPos() throws Exception {
+        client.clearDatabase();
+        client.register("testUser1", "testPass1", "testEmail");
+        client.createGame("testGame1");
+        Assertions.assertNotNull(client.listGames());
+    }
+
+    @Test
+    public void listGamesNeg() throws Exception {
+        client.clearDatabase();
+        client.register("testUser1", "testPass1", "testEmail");
+        Assertions.assertEquals("Games: {status=200.0, games=[]}", client.listGames());
+    }
+
+    @Test
+    public void joinGamePos() throws Exception {
+        client.clearDatabase();
+        client.register("testUser1", "testPass1", "testEmail");
+        client.createGame("testGame1");
+        Assertions.assertEquals("Join Game Success.", client.joinGame("1", "WHITE"));
+    }
+
+    @Test
+    public void joinGameNeg() throws Exception {
+        client.clearDatabase();
+        client.register("testUser1", "testPass1", "testEmail");
+        Assertions.assertEquals("Failed to Join Game. HTTP error code: 400", client.joinGame("1", "WHITE"));
+    }
+
+    @Test
+    public void observePos() throws Exception {
+        client.clearDatabase();
+        client.register("testUser1", "testPass1", "testEmail");
+        client.createGame("testGame1");
+        Assertions.assertEquals("Join Game Success.", client.joinGame("1", ""));
+    }
+
+    @Test
+    public void observeNeg() throws Exception {
+        client.clearDatabase();
+        client.register("testUser1", "testPass1", "testEmail");
+        Assertions.assertEquals("Failed to Join Game. HTTP error code: 400", client.joinGame("1", "WHITE"));
+    }
 }
