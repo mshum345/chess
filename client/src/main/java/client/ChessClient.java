@@ -242,6 +242,8 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
+            printBoardWhite();
+            printBoardBlack();
             return "Join Game Success.";
         } else {
             return "Failed to Join Game. HTTP error code: " + responseCode;
@@ -250,5 +252,13 @@ public class ChessClient {
 
     public boolean getState() {
         return loggedIn;
+    }
+
+    public void printBoardWhite() {
+
+    }
+
+    public void printBoardBlack() {
+
     }
 }
