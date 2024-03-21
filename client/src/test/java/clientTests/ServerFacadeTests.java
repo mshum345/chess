@@ -103,7 +103,7 @@ public class ServerFacadeTests {
     public void listGamesNeg() throws Exception {
         client.clearDatabase();
         client.register("testUser1", "testPass1", "testEmail");
-        Assertions.assertEquals("Games: {status=200.0, games=[]}", client.listGames());
+        Assertions.assertEquals("Games:", client.listGames().trim());
     }
 
     @Test

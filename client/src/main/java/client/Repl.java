@@ -1,5 +1,6 @@
 package client;
 
+import static ui.EscapeSequences.*;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -12,6 +13,8 @@ public class Repl {
     }
 
     public void run() {
+        System.out.print(RESET_BG_COLOR);
+        System.out.print(SET_TEXT_COLOR_GREEN);
         System.out.println("\uD83D\uDC36 Welcome to the Chess Client. Log in to start.");
         System.out.println(client.preHelp());
 
