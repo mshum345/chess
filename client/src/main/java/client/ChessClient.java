@@ -253,14 +253,20 @@ public class ChessClient {
         http.setRequestProperty("authorization", authToken);
         http.setDoOutput(true);
 
+
+
         // Handle join observer
         var playerColor = "";
         if (params.length == 2) {
             playerColor = params[1];
         }
 
+        // Handles gameID hiding from user
+        GameData game = gameMap.get(Integer.parseInt(params[0]));
+        String gameID = Integer.toString(game.gameID());
+
         // Write out the body
-        var body = Map.of("gameID", params[0], "playerColor", playerColor);
+        var body = Map.of("gameID", gameID, "playerColor", playerColor);
         try (var outputStream = http.getOutputStream()) {
             var jsonBody = new Gson().toJson(body);
             outputStream.write(jsonBody.getBytes());
