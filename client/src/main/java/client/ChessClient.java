@@ -261,26 +261,26 @@ public class ChessClient {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
+        var symbols = new String[] {"a", "b", "c", "d", "e", "f", "g", "h"};
 
-        drawChessBoard(out);
+        drawGreyRow(out, symbols);
+        drawRowSpecialPieces(out, "RED", 1, "8");
+        drawRowPawns(out, "RED", 2, "7");
+        drawEmptyRow(out, 1, "6");
+        drawEmptyRow(out, 2, "5");
+        drawEmptyRow(out, 1, "4");
+        drawEmptyRow(out, 2, "3");
+        drawRowPawns(out, "BLUE", 1, "2");
+        drawRowSpecialPieces(out, "BLUE", 2, "1");
+        drawGreyRow(out, symbols);
     }
 
     public void printBoardBlack() {
 
     }
 
-    private static void drawChessBoard(PrintStream out) {
-        drawRowSpecialPieces(out, "RED", 1);
-        drawRowPawns(out, "RED", 2);
-        drawEmptyRow(out, 1);
-        drawEmptyRow(out, 2);
-        drawEmptyRow(out, 1);
-        drawEmptyRow(out, 2);
-        drawRowPawns(out, "BLUE", 1);
-        drawRowSpecialPieces(out, "BLUE", 2);
-    }
-
-    private static void drawRowPawns(PrintStream out, String pieceColor, int modNum) {
+    private static void drawRowPawns(PrintStream out, String pieceColor, int modNum, String greySymbol) {
+        printCharOnGrey(out, greySymbol);
         for (int i = modNum; i < modNum + 8; i++) {
             if (i % 2 == 1) {
                 printPieceOnBlack(out, "P", pieceColor);
@@ -289,13 +289,17 @@ public class ChessClient {
                 printPieceOnWhite(out, "P", pieceColor);
             }
         }
+        printCharOnGrey(out, greySymbol);
+
         out.print(RESET_BG_COLOR);
         out.println();
     }
 
-    private static void drawRowSpecialPieces(PrintStream out, String pieceColor, int modNum) {
+    private static void drawRowSpecialPieces(PrintStream out, String pieceColor, int modNum, String greySymbol) {
         String[] pieces = {"R", "N", "B", "K", "Q", "B", "N", "R"};
         var j = 0;
+
+        printCharOnGrey(out, greySymbol);
         for (int i = modNum; i < modNum + 8; i++) {
             if (i % 2 == 1) {
                 printPieceOnBlack(out, pieces[j], pieceColor);
@@ -305,11 +309,14 @@ public class ChessClient {
             }
             j++;
         }
+        printCharOnGrey(out, greySymbol);
+
         out.print(RESET_BG_COLOR);
         out.println();
     }
 
-    private static void drawEmptyRow(PrintStream out, int modNum) {
+    private static void drawEmptyRow(PrintStream out, int modNum, String greySymbol) {
+        printCharOnGrey(out, greySymbol);
         for (int i = modNum; i < modNum + 8; i++) {
             if (i % 2 == 1) {
                 printEmptyBlack(out);
@@ -318,6 +325,18 @@ public class ChessClient {
                 printEmptyWhite(out);
             }
         }
+        printCharOnGrey(out, greySymbol);
+
+        out.print(RESET_BG_COLOR);
+        out.println();
+    }
+
+    private static void drawGreyRow(PrintStream out, String[] symbols) {
+        printEmptyGrey(out);
+        for (int i = 0; i < 8; i++) {
+            printCharOnGrey(out, symbols[i]);
+        }
+        printEmptyGrey(out);
         out.print(RESET_BG_COLOR);
         out.println();
     }
@@ -346,6 +365,18 @@ public class ChessClient {
             out.print(SET_TEXT_COLOR_BLUE);
             out.print(" " + piece + " ");
         }
+    }
+
+    private static void printCharOnGrey(PrintStream out, String symbol) {
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(SET_TEXT_COLOR_DARK_GREY);
+        out.print(" " + symbol + " ");
+    }
+
+
+    private static void printEmptyGrey(PrintStream out) {
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print("   ");
     }
 
     private static void printEmptyWhite(PrintStream out) {
