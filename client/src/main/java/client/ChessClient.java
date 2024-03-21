@@ -289,18 +289,23 @@ public class ChessClient {
                 printPieceOnWhite(out, "P", pieceColor);
             }
         }
+        out.print(RESET_BG_COLOR);
         out.println();
     }
 
     private static void drawRowSpecialPieces(PrintStream out, String pieceColor, int modNum) {
+        String[] pieces = {"R", "N", "B", "K", "Q", "B", "N", "R"};
+        var j = 0;
         for (int i = modNum; i < modNum + 8; i++) {
             if (i % 2 == 1) {
-                printEmptyBlack(out);
+                printPieceOnBlack(out, pieces[j], pieceColor);
             }
             else {
-                printEmptyWhite(out);
+                printPieceOnWhite(out, pieces[j], pieceColor);
             }
+            j++;
         }
+        out.print(RESET_BG_COLOR);
         out.println();
     }
 
@@ -313,7 +318,8 @@ public class ChessClient {
                 printEmptyWhite(out);
             }
         }
-       out.println();
+        out.print(RESET_BG_COLOR);
+        out.println();
     }
 
     private static void printPieceOnBlack(PrintStream out, String piece, String pieceColor) {
