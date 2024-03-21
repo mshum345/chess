@@ -1,6 +1,8 @@
 package client;
 
 import com.google.gson.Gson;
+import model.ResponseData;
+import model.GameData;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import static ui.EscapeSequences.*;
@@ -17,6 +20,7 @@ public class ChessClient {
     private final String serverUrl;
     private boolean loggedIn = false;
     private String authToken;
+    Map<Integer, GameData> gameMap;
     public ChessClient(String url) {
         this.serverUrl = url;
     }
@@ -211,8 +215,30 @@ public class ChessClient {
             // Read response body
             try (InputStream inputStream = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
-                return "Games: " + responseMap;
+                ResponseData responseData = new Gson().fromJson(reader, ResponseData.class);
+
+                // Extract games and convert to map
+                Map<Integer, GameData> newGameMap = new HashMap<>();
+                int i = 1;
+                for (GameData gameData : responseData.games()) {
+                    newGameMap.put(i++, gameData);
+                }
+
+                gameMap = newGameMap;
+
+                // Construct string with game details using gameMap
+                StringBuilder sb = new StringBuilder();
+                sb.append("Games:\n");
+                for (Map.Entry<Integer, GameData> entry : gameMap.entrySet()) {
+                    int index = entry.getKey();
+                    GameData gameData = entry.getValue();
+                    sb.append(index).append(". ");
+                    sb.append("Game Name: ").append(gameData.gameName()).append(", ");
+                    sb.append("White Username: ").append(gameData.whiteUsername() != null ? gameData.whiteUsername() : "Empty").append(", ");
+                    sb.append("Black Username: ").append(gameData.blackUsername() != null ? gameData.blackUsername() : "Empty").append("\n");
+                }
+
+                return sb.toString();
             }
         } else {
             return "Failed to list games. HTTP error code: " + responseCode;
