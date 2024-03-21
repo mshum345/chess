@@ -44,32 +44,28 @@ public class ChessClient {
                 help - help with possible commands""";
     }
 
-    public String eval(String input) {
-        try {
-            var tokens = input.toLowerCase().split(" ");
-            var cmd = (tokens.length > 0) ? tokens[0] : "help";
-            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            if (loggedIn == false) {
-                return switch (cmd) {
-                    case "login" -> login(params);
-                    case "register" -> register(params);
-                    case "quit" -> "quit";
-                    default -> preHelp();
-                };
-            }
-            else {
-                return switch (cmd) {
-                    case "logout" -> logout(params);
-                    case "create" -> createGame(params);
-                    case "list" -> listGames(params);
-                    case "join" -> joinGame(params);
-                    case "observe" -> joinGame(params);
-                    case "quit" -> "quit";
-                    default -> postHelp();
-                };
-            }
-        } catch (Throwable ex) {
-            return ex.getMessage();
+    public String eval(String input) throws Exception {
+        var tokens = input.toLowerCase().split(" ");
+        var cmd = (tokens.length > 0) ? tokens[0] : "help";
+        var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+        if (loggedIn == false) {
+            return switch (cmd) {
+                case "login" -> login(params);
+                case "register" -> register(params);
+                case "quit" -> "quit";
+                default -> preHelp();
+            };
+        }
+        else {
+            return switch (cmd) {
+                case "logout" -> logout(params);
+                case "create" -> createGame(params);
+                case "list" -> listGames(params);
+                case "join" -> joinGame(params);
+                case "observe" -> joinGame(params);
+                case "quit" -> "quit";
+                default -> postHelp();
+            };
         }
     }
 

@@ -26,7 +26,7 @@ public class Repl {
                 result = client.eval(line);
                 System.out.println(result);
             } catch (Throwable e) {
-                System.out.print(e.getMessage());
+                System.out.println("Please check the required command parameters and try again. (Try typing help)");
             }
         }
         System.out.println();
