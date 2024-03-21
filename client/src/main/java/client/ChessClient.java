@@ -4,11 +4,14 @@ import com.google.gson.Gson;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
+
+import static ui.EscapeSequences.*;
 
 public class ChessClient {
     private final String serverUrl;
@@ -255,10 +258,97 @@ public class ChessClient {
     }
 
     public void printBoardWhite() {
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
+        out.print(ERASE_SCREEN);
+
+        drawChessBoard(out);
     }
 
     public void printBoardBlack() {
 
+    }
+
+    private static void drawChessBoard(PrintStream out) {
+        drawRowSpecialPieces(out, "RED", 1);
+        drawRowPawns(out, "RED", 2);
+        drawEmptyRow(out, 1);
+        drawEmptyRow(out, 2);
+        drawEmptyRow(out, 1);
+        drawEmptyRow(out, 2);
+        drawRowPawns(out, "BLUE", 1);
+        drawRowSpecialPieces(out, "BLUE", 2);
+    }
+
+    private static void drawRowPawns(PrintStream out, String pieceColor, int modNum) {
+        for (int i = modNum; i < modNum + 8; i++) {
+            if (i % 2 == 1) {
+                printPieceOnBlack(out, "P", pieceColor);
+            }
+            else {
+                printPieceOnWhite(out, "P", pieceColor);
+            }
+        }
+        out.println();
+    }
+
+    private static void drawRowSpecialPieces(PrintStream out, String pieceColor, int modNum) {
+        for (int i = modNum; i < modNum + 8; i++) {
+            if (i % 2 == 1) {
+                printEmptyBlack(out);
+            }
+            else {
+                printEmptyWhite(out);
+            }
+        }
+        out.println();
+    }
+
+    private static void drawEmptyRow(PrintStream out, int modNum) {
+        for (int i = modNum; i < modNum + 8; i++) {
+            if (i % 2 == 1) {
+                printEmptyBlack(out);
+            }
+            else {
+                printEmptyWhite(out);
+            }
+        }
+       out.println();
+    }
+
+    private static void printPieceOnBlack(PrintStream out, String piece, String pieceColor) {
+        if (pieceColor == "RED") {
+            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_TEXT_COLOR_RED);
+            out.print(" " + piece + " ");
+        }
+        else {
+            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_TEXT_COLOR_BLUE);
+            out.print(" " + piece + " ");
+        }
+    }
+
+    private static void printPieceOnWhite(PrintStream out, String piece, String pieceColor) {
+        if (pieceColor == "RED") {
+            out.print(SET_BG_COLOR_WHITE);
+            out.print(SET_TEXT_COLOR_RED);
+            out.print(" " + piece + " ");
+        }
+        else {
+            out.print(SET_BG_COLOR_WHITE);
+            out.print(SET_TEXT_COLOR_BLUE);
+            out.print(" " + piece + " ");
+        }
+    }
+
+    private static void printEmptyWhite(PrintStream out) {
+        out.print(SET_BG_COLOR_WHITE);
+        out.print("   ");
+    }
+
+    private static void printEmptyBlack(PrintStream out) {
+        out.print(SET_BG_COLOR_BLACK);
+        out.print("   ");
     }
 }
