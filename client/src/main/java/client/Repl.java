@@ -3,6 +3,8 @@ package client;
 import java.util.Objects;
 import java.util.Scanner;
 
+import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
+
 public class Repl {
     private final ChessClient client;
     public Repl(String serverUrl) {

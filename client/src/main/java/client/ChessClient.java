@@ -259,8 +259,6 @@ public class ChessClient {
 
     public void printBoardWhite() {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-
-        out.print(ERASE_SCREEN);
         var symbols = new String[] {"a", "b", "c", "d", "e", "f", "g", "h"};
 
         drawGreyRow(out, symbols);
@@ -273,10 +271,24 @@ public class ChessClient {
         drawRowPawns(out, "BLUE", 1, "2");
         drawRowSpecialPieces(out, "BLUE", 2, "1");
         drawGreyRow(out, symbols);
+        out.print(SET_TEXT_COLOR_GREEN);
     }
 
     public void printBoardBlack() {
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        var symbols = new String[] {"h", "g", "f", "e", "d", "c", "b", "a"};
 
+        drawGreyRow(out, symbols);
+        drawRowSpecialPieces(out, "BLUE", 1, "1");
+        drawRowPawns(out, "BLUE", 2, "2");
+        drawEmptyRow(out, 1, "3");
+        drawEmptyRow(out, 2, "4");
+        drawEmptyRow(out, 1, "5");
+        drawEmptyRow(out, 2, "6");
+        drawRowPawns(out, "RED", 1, "7");
+        drawRowSpecialPieces(out, "RED", 2, "8");
+        drawGreyRow(out, symbols);
+        out.print(SET_TEXT_COLOR_GREEN);
     }
 
     private static void drawRowPawns(PrintStream out, String pieceColor, int modNum, String greySymbol) {
