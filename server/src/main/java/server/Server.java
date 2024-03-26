@@ -7,6 +7,7 @@ import dataAccess.*;
 import model.AuthData;
 import model.ResponseData;
 import model.UserData;
+import server.websocket.WebSocketHandler;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
@@ -17,6 +18,7 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
     private ResponseData responseData;
+    private final WebSocketHandler webSocketHandler;
 
     public Server() {
         SQLClearDAO clearDAO;
@@ -33,6 +35,7 @@ public class Server {
         clearService = new ClearService(clearDAO);
         userService = new UserService(userDAO);
         gameService = new GameService(gameDAO, userDAO);
+        webSocketHandler = new WebSocketHandler();
     }
 
     public static void main(String[] args) {
@@ -43,6 +46,8 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/connect", webSocketHandler);
 
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);

@@ -1,5 +1,6 @@
 package client;
 
+import client.webSocket.WebSocketFacade;
 import com.google.gson.Gson;
 import model.ResponseData;
 import model.GameData;
@@ -17,6 +18,8 @@ import java.util.Map;
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
+    private WebSocketFacade ws;
+    private String username;
     private final String serverUrl;
     private boolean loggedIn = false;
     private String authToken;
@@ -111,6 +114,7 @@ public class ChessClient {
                 Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
                 authToken = responseMap.get("authToken");
                 loggedIn = true;
+                username = params[0];
                 return "Register Success.";
             }
         } else {
@@ -142,6 +146,7 @@ public class ChessClient {
                 Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
                 authToken = responseMap.get("authToken");
                 loggedIn = true;
+                username = params[0];
                 return "Login Success.";
             }
         } else {
@@ -157,12 +162,14 @@ public class ChessClient {
         http.setRequestProperty("authorization", authToken);
         http.setDoOutput(true);
 
+
         // Make request
         int responseCode = http.getResponseCode();
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
             loggedIn = false;
+            username = "";
             return "Logout Success.";
         } else {
             return "Failed to logout. HTTP error code: " + responseCode;
@@ -249,12 +256,12 @@ public class ChessClient {
         http.setRequestProperty("authorization", authToken);
         http.setDoOutput(true);
 
-
-
         // Handle join observer
         var playerColor = "";
+        var observer = true;
         if (params.length == 2) {
             playerColor = params[1];
+            observer = false;
         }
 
         // Handles gameID hiding from user
@@ -270,6 +277,15 @@ public class ChessClient {
 
         // Make request
         int responseCode = http.getResponseCode();
+
+        // Connect to WebSocket
+        ws = new WebSocketFacade(serverUrl);
+        if (observer) {
+            ws.joinObserver(authToken, body, username);
+        }
+        else {
+            ws.joinPlayer(authToken, body, username);
+        }
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
