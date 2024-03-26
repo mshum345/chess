@@ -10,6 +10,8 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
+    private String username;
+
     public UserGameCommand(String authToken) {
         this.authToken = authToken;
     }
@@ -28,6 +30,9 @@ public class UserGameCommand {
 
     public String getAuthString() {
         return authToken;
+    }
+    public String getUsername() {
+        return username;
     }
 
     public CommandType getCommandType() {

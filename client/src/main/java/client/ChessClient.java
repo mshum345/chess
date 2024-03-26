@@ -278,19 +278,20 @@ public class ChessClient {
         // Make request
         int responseCode = http.getResponseCode();
 
-        // Connect to WebSocket
-        ws = new WebSocketFacade(serverUrl);
-        if (observer) {
-            ws.joinObserver(authToken, body, username);
-        }
-        else {
-            ws.joinPlayer(authToken, body, username);
-        }
-
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
             printBoardWhite();
             printBoardBlack();
+
+            // Connect to WebSocket
+            ws = new WebSocketFacade(serverUrl);
+            if (observer) {
+                ws.joinObserver(authToken, body, username);
+            }
+            else {
+                ws.joinPlayer(authToken, body, username);
+            }
+
             return "Join Game Success.";
         } else {
             return "Failed to Join Game. HTTP error code: " + responseCode;
