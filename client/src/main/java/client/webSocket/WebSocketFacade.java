@@ -3,11 +3,10 @@ package client.webSocket;
 import com.google.gson.Gson;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.UserSessionCommand;
 
 import javax.websocket.*;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 public class WebSocketFacade {
@@ -36,19 +35,19 @@ public class WebSocketFacade {
         }
     }
 
-    public void joinPlayer(String authToken, Map<String, String> body, String username) {
+    public void joinPlayer(String authToken, int gameID, String playerColor, String username) {
         try {
-            var command = new UserGameCommand(authToken);
+            var command = new UserSessionCommand(authToken, gameID, playerColor, UserGameCommand.CommandType.JOIN_PLAYER, username);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
             System.out.println("Failure joining player: " + ex.getMessage());
         }
     }
 
-    public void joinObserver(String authToken, Map<String, String> body, String username) {
+    public void joinObserver(String authToken, int gameID, String username) {
         try {
-            var action = new UserGameCommand(authToken);
-            this.session.getBasicRemote().sendText(new Gson().toJson(action));
+            var command = new UserSessionCommand(authToken, gameID, null, UserGameCommand.CommandType.JOIN_OBSERVER, username);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
             System.out.println("Failure joining observer: " + ex.getMessage());
         }

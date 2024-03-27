@@ -286,10 +286,10 @@ public class ChessClient {
             // Connect to WebSocket
             ws = new WebSocketFacade(serverUrl);
             if (observer) {
-                ws.joinObserver(authToken, body, username);
+                ws.joinObserver(authToken, game.gameID(), username);
             }
             else {
-                ws.joinPlayer(authToken, body, username);
+                ws.joinPlayer(authToken, game.gameID(), playerColor, username);
             }
 
             return "Join Game Success.";

@@ -6,33 +6,40 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
-import java.io.IOException;
+import java.util.HashMap;
 
 public class WebSocketHandler {
 
-    private final ConnectionManager connections = new ConnectionManager();
+    // Map of GameID to a map of authtokens to sessions
+    private final HashMap<Integer, HashMap<String, Session>> gameSessions = new HashMap<Integer, HashMap<String, Session>>();
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws Exception {
-        UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
-        switch (action.getCommandType()) {
-            case JOIN_PLAYER -> joinPlayer(action.getUsername(), session);
-            case JOIN_OBSERVER -> joinObserver(action.getUsername(), session);
+    public void onMessage(Session session, String message, String username) throws Exception {
+        UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+        switch (command.getCommandType()) {
+            case JOIN_PLAYER -> joinPlayer(command, session, username);
+            case JOIN_OBSERVER -> joinObserver(command, session);
             // more cases
         }
     }
 
-    private void joinPlayer(String username, Session session) throws Exception {
-        connections.add(username, session);
+    private void joinPlayer(UserGameCommand command, Session session, String username) throws Exception {
+        // Inserts session into gameSessions HashMap
+        HashMap<String, Session> newHashMap = new HashMap<>();
+        newHashMap.put(command.getAuthToken(), session);
+        gameSessions.put(command.getGameID(), newHashMap);
+
+        // Broadcasts message to all sessions but player who just joined
         var message = String.format("%s has joined the game as player", username);
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        connections.broadcast(username, serverMessage);
+        broadcast();
     }
 
-    private void joinObserver(String username, Session session) throws Exception {
-        connections.add(username, session);
-        var message = String.format("%s has joined the game as observer", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        connections.broadcast(username, notification);
+    private void joinObserver(UserGameCommand command, Session session) throws Exception {
+
+    }
+
+    private void broadcast() {
+
     }
 }
