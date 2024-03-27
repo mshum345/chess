@@ -3,11 +3,9 @@ package client.webSocket;
 import com.google.gson.Gson;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
-import webSocketMessages.userCommands.UserSessionCommand;
 
 import javax.websocket.*;
 import java.net.URI;
-import java.util.Map;
 
 public class WebSocketFacade {
     private Session session;
@@ -37,7 +35,7 @@ public class WebSocketFacade {
 
     public void joinPlayer(String authToken, int gameID, String playerColor, String username) {
         try {
-            var command = new UserSessionCommand(authToken, gameID, playerColor, UserGameCommand.CommandType.JOIN_PLAYER, username);
+            var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_PLAYER, authToken, gameID, null, username, playerColor);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
             System.out.println("Failure joining player: " + ex.getMessage());
@@ -46,7 +44,7 @@ public class WebSocketFacade {
 
     public void joinObserver(String authToken, int gameID, String username) {
         try {
-            var command = new UserSessionCommand(authToken, gameID, null, UserGameCommand.CommandType.JOIN_OBSERVER, username);
+            var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_PLAYER, authToken, gameID, null, username, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
             System.out.println("Failure joining observer: " + ex.getMessage());
