@@ -1,5 +1,6 @@
 package client.webSocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
@@ -50,4 +51,33 @@ public class WebSocketFacade {
             System.out.println("Failure joining observer: " + ex.getMessage());
         }
     }
+
+    public void resign(String authToken, int gameID) {
+        try {
+            var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID, null, null, null);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (Throwable ex) {
+            System.out.println("Failure resigning from game: " + ex.getMessage());
+        }
+    }
+
+    public void leave(String authToken, int gameID) {
+        try {
+            var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID, null, null, null);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (Throwable ex) {
+            System.out.println("Failure leaving game: " + ex.getMessage());
+        }
+    }
+
+    public void makeMove(String authToken, int gameID, ChessMove newMove) {
+        try {
+            var command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, newMove, null, null);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (Throwable ex) {
+            System.out.println("Failure making move: " + ex.getMessage());
+        }
+    }
+
+
 }

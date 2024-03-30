@@ -1,5 +1,8 @@
 package client;
 
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import client.webSocket.WebSocketFacade;
 import com.google.gson.Gson;
 import model.ResponseData;
@@ -19,7 +22,9 @@ public class ChessClient {
     private String username;
     private final String serverUrl;
     private String authToken;
+    private int currentGameID;
     Map<Integer, GameData> gameMap;
+    VisualChessBoard board;
     private UserState state;
     public enum UserState {
         LOGGED_OUT,
@@ -31,6 +36,8 @@ public class ChessClient {
     public ChessClient(String url) {
         this.serverUrl = url;
         this.state = UserState.LOGGED_OUT;
+        this.ws = new WebSocketFacade(serverUrl);
+        this.board = new VisualChessBoard();
     }
 
     public String preHelp() {
@@ -111,25 +118,33 @@ public class ChessClient {
     }
 
     private String legalMoves(String[] params) {
-        return null;
+        board.printBoardBlack();
+        board.printBoardWhite();
+        return "";
     }
 
     private String resign(String[] params) {
         state = UserState.LOGGED_IN;
-        return null;
+        ws.resign(authToken, currentGameID);
+        return "resigned from game";
     }
 
     private String makeMove(String[] params) {
-        return null;
+        ChessMove newMove = new ChessMove(new ChessPosition(1, 1), new ChessPosition(2, 2), ChessPiece.PieceType.QUEEN);
+        ws.makeMove(authToken, currentGameID, newMove);
+        return "move made";
     }
 
     private String leave(String[] params) {
         state = UserState.LOGGED_IN;
-        return null;
+        ws.leave(authToken, currentGameID);
+        return "left game";
     }
 
     private String drawCurrentBoard(String[] params) {
-        return null;
+        board.printBoardWhite();
+        board.printBoardBlack();
+        return "";
     }
 
     public String clearDatabase() throws Exception {
@@ -342,7 +357,6 @@ public class ChessClient {
         if (responseCode == HttpURLConnection.HTTP_OK) {
 
             // Connect to WebSocket
-            ws = new WebSocketFacade(serverUrl);
             if (observer) {
                 ws.joinObserver(authToken, game.gameID(), username);
                 state = UserState.OBSERVER;
