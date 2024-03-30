@@ -36,8 +36,14 @@ public class Repl {
     }
 
     private void printPrompt() {
-        if (client.getState()) {
+        if (client.getState() == ChessClient.UserState.LOGGED_IN) {
             System.out.print("[LOGGED_IN] >>> ");
+        }
+        else if (client.getState() == ChessClient.UserState.PLAYER){
+            System.out.print("[PLAYER] >>> ");
+        }
+        else if (client.getState() == ChessClient.UserState.OBSERVER){
+            System.out.print("[OBSERVER] >>> ");
         }
         else {
             System.out.print("[LOGGED_OUT] >>> ");

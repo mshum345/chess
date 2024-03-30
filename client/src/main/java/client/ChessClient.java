@@ -7,7 +7,6 @@ import model.GameData;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -15,17 +14,23 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ui.EscapeSequences.*;
-
 public class ChessClient {
     private WebSocketFacade ws;
     private String username;
     private final String serverUrl;
-    private boolean loggedIn = false;
     private String authToken;
     Map<Integer, GameData> gameMap;
+    private UserState state;
+    public enum UserState {
+        LOGGED_OUT,
+        LOGGED_IN,
+        PLAYER,
+        OBSERVER
+    }
+
     public ChessClient(String url) {
         this.serverUrl = url;
+        this.state = UserState.LOGGED_OUT;
     }
 
     public String preHelp() {
@@ -47,19 +52,29 @@ public class ChessClient {
                 help - help with possible commands""";
     }
 
+    public String playerHelp() {
+        return """
+                redraw chess board - draws the current chess board
+                leave - leaves the game
+                make move - makes a move in chess
+                resign - resigns you from the game
+                highlight legal moves - highlights all legal moves for a piece
+                help - help with possible commands""";
+    }
+
+    public String obsHelp() {
+        return """
+                redraw chess board - draws the current chess board
+                leave - leaves the game
+                highlight legal moves - highlights all legal moves for a piece
+                help - help with possible commands""";
+    }
+
     public String eval(String input) throws Exception {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-        if (loggedIn == false) {
-            return switch (cmd) {
-                case "login" -> login(params);
-                case "register" -> register(params);
-                case "quit" -> "quit";
-                default -> preHelp();
-            };
-        }
-        else {
+        if (state == UserState.LOGGED_IN) {
             return switch (cmd) {
                 case "logout" -> logout(params);
                 case "create" -> createGame(params);
@@ -69,7 +84,52 @@ public class ChessClient {
                 case "quit" -> "quit";
                 default -> postHelp();
             };
+        } else if (state == UserState.PLAYER) {
+            return switch (cmd) {
+                case "redraw chess board" -> drawCurrentBoard(params);
+                case "leave" -> leave(params);
+                case "make move" -> makeMove(params);
+                case "resign" -> resign(params);
+                case "highlight legal moves" -> legalMoves(params);
+                default -> playerHelp();
+            };
+        } else if (state == UserState.OBSERVER) {
+            return switch (cmd) {
+                case "redraw chess board" -> drawCurrentBoard(params);
+                case "leave" -> leave(params);
+                case "highlight legal moves" -> legalMoves(params);
+                default -> obsHelp();
+            };
+        } else {
+            return switch (cmd) {
+                case "login" -> login(params);
+                case "register" -> register(params);
+                case "quit" -> "quit";
+                default -> preHelp();
+            };
         }
+    }
+
+    private String legalMoves(String[] params) {
+        return null;
+    }
+
+    private String resign(String[] params) {
+        state = UserState.LOGGED_IN;
+        return null;
+    }
+
+    private String makeMove(String[] params) {
+        return null;
+    }
+
+    private String leave(String[] params) {
+        state = UserState.LOGGED_IN;
+        return null;
+    }
+
+    private String drawCurrentBoard(String[] params) {
+        return null;
     }
 
     public String clearDatabase() throws Exception {
@@ -113,7 +173,7 @@ public class ChessClient {
                 InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
                 Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
                 authToken = responseMap.get("authToken");
-                loggedIn = true;
+                state = UserState.LOGGED_IN;
                 username = params[0];
                 return "Register Success.";
             }
@@ -145,7 +205,7 @@ public class ChessClient {
                 InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
                 Map<String, String> responseMap = new Gson().fromJson(reader, Map.class);
                 authToken = responseMap.get("authToken");
-                loggedIn = true;
+                state = UserState.LOGGED_IN;
                 username = params[0];
                 return "Login Success.";
             }
@@ -168,7 +228,7 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            loggedIn = false;
+            state = UserState.LOGGED_OUT;
             username = "";
             return "Logout Success.";
         } else {
@@ -280,16 +340,16 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            printBoardWhite();
-            printBoardBlack();
 
             // Connect to WebSocket
             ws = new WebSocketFacade(serverUrl);
             if (observer) {
                 ws.joinObserver(authToken, game.gameID(), username);
+                state = UserState.OBSERVER;
             }
             else {
                 ws.joinPlayer(authToken, game.gameID(), playerColor, username);
+                state = UserState.PLAYER;
             }
 
             return "Join Game Success.";
@@ -298,151 +358,9 @@ public class ChessClient {
         }
     }
 
-    public boolean getState() {
-        return loggedIn;
-    }
-
-    public void printBoardWhite() {
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        var symbols = new String[] {"a", "b", "c", "d", "e", "f", "g", "h"};
-
-        drawGreyRow(out, symbols);
-        drawRowSpecialPieces(out, "RED", 1, "8");
-        drawRowPawns(out, "RED", 2, "7");
-        drawEmptyRow(out, 1, "6");
-        drawEmptyRow(out, 2, "5");
-        drawEmptyRow(out, 1, "4");
-        drawEmptyRow(out, 2, "3");
-        drawRowPawns(out, "BLUE", 1, "2");
-        drawRowSpecialPieces(out, "BLUE", 2, "1");
-        drawGreyRow(out, symbols);
-        out.print(SET_TEXT_COLOR_GREEN);
-    }
-
-    public void printBoardBlack() {
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        var symbols = new String[] {"h", "g", "f", "e", "d", "c", "b", "a"};
-
-        drawGreyRow(out, symbols);
-        drawRowSpecialPieces(out, "BLUE", 1, "1");
-        drawRowPawns(out, "BLUE", 2, "2");
-        drawEmptyRow(out, 1, "3");
-        drawEmptyRow(out, 2, "4");
-        drawEmptyRow(out, 1, "5");
-        drawEmptyRow(out, 2, "6");
-        drawRowPawns(out, "RED", 1, "7");
-        drawRowSpecialPieces(out, "RED", 2, "8");
-        drawGreyRow(out, symbols);
-        out.print(SET_TEXT_COLOR_GREEN);
-    }
-
-    private static void drawRowPawns(PrintStream out, String pieceColor, int modNum, String greySymbol) {
-        printCharOnGrey(out, greySymbol);
-        for (int i = modNum; i < modNum + 8; i++) {
-            if (i % 2 == 1) {
-                printPieceOnBlack(out, "P", pieceColor);
-            }
-            else {
-                printPieceOnWhite(out, "P", pieceColor);
-            }
-        }
-        printCharOnGrey(out, greySymbol);
-
-        out.print(RESET_BG_COLOR);
-        out.println();
-    }
-
-    private static void drawRowSpecialPieces(PrintStream out, String pieceColor, int modNum, String greySymbol) {
-        String[] pieces = {"R", "N", "B", "K", "Q", "B", "N", "R"};
-        var j = 0;
-
-        printCharOnGrey(out, greySymbol);
-        for (int i = modNum; i < modNum + 8; i++) {
-            if (i % 2 == 1) {
-                printPieceOnBlack(out, pieces[j], pieceColor);
-            }
-            else {
-                printPieceOnWhite(out, pieces[j], pieceColor);
-            }
-            j++;
-        }
-        printCharOnGrey(out, greySymbol);
-
-        out.print(RESET_BG_COLOR);
-        out.println();
-    }
-
-    private static void drawEmptyRow(PrintStream out, int modNum, String greySymbol) {
-        printCharOnGrey(out, greySymbol);
-        for (int i = modNum; i < modNum + 8; i++) {
-            if (i % 2 == 1) {
-                printEmptyBlack(out);
-            }
-            else {
-                printEmptyWhite(out);
-            }
-        }
-        printCharOnGrey(out, greySymbol);
-
-        out.print(RESET_BG_COLOR);
-        out.println();
-    }
-
-    private static void drawGreyRow(PrintStream out, String[] symbols) {
-        printEmptyGrey(out);
-        for (int i = 0; i < 8; i++) {
-            printCharOnGrey(out, symbols[i]);
-        }
-        printEmptyGrey(out);
-        out.print(RESET_BG_COLOR);
-        out.println();
-    }
-
-    private static void printPieceOnBlack(PrintStream out, String piece, String pieceColor) {
-        if (pieceColor == "RED") {
-            out.print(SET_BG_COLOR_BLACK);
-            out.print(SET_TEXT_COLOR_RED);
-            out.print(" " + piece + " ");
-        }
-        else {
-            out.print(SET_BG_COLOR_BLACK);
-            out.print(SET_TEXT_COLOR_BLUE);
-            out.print(" " + piece + " ");
-        }
-    }
-
-    private static void printPieceOnWhite(PrintStream out, String piece, String pieceColor) {
-        if (pieceColor == "RED") {
-            out.print(SET_BG_COLOR_WHITE);
-            out.print(SET_TEXT_COLOR_RED);
-            out.print(" " + piece + " ");
-        }
-        else {
-            out.print(SET_BG_COLOR_WHITE);
-            out.print(SET_TEXT_COLOR_BLUE);
-            out.print(" " + piece + " ");
-        }
-    }
-
-    private static void printCharOnGrey(PrintStream out, String symbol) {
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(SET_TEXT_COLOR_DARK_GREY);
-        out.print(" " + symbol + " ");
+    public UserState getState() {
+        return this.state;
     }
 
 
-    private static void printEmptyGrey(PrintStream out) {
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print("   ");
-    }
-
-    private static void printEmptyWhite(PrintStream out) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print("   ");
-    }
-
-    private static void printEmptyBlack(PrintStream out) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print("   ");
-    }
 }
