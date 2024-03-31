@@ -22,8 +22,34 @@ public class WebSocketHandler {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case JOIN_PLAYER, JOIN_OBSERVER -> joinUser(command, session);
-            // more cases
+            case RESIGN -> resign(command, session);
+            case LEAVE -> leave(command, session);
+            case MAKE_MOVE -> makeMove(command, session);
         }
+    }
+
+    private void makeMove(UserGameCommand command, Session session) {
+
+    }
+
+    private void leave(UserGameCommand command, Session session) {
+        // Send Server Message
+        var message = String.format("%s has left the game", command.getUsername());
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        broadcast(serverMessage, command.getGameID(), command.getAuthToken());
+
+        // Remove userInfo from gameSessions
+        gameSessions.get(command.getGameID()).remove(command.getAuthToken());
+    }
+
+    private void resign(UserGameCommand command, Session session) {
+        // Send Server Message
+        var message = String.format("%s has resigned from the game", command.getUsername());
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        broadcast(serverMessage, command.getGameID(), command.getAuthToken());
+
+        // Remove game from gameSessions
+        gameSessions.remove(command.getGameID());
     }
 
     private void joinUser(UserGameCommand command, Session session) throws Exception {
