@@ -28,14 +28,13 @@ public class Server {
             clearDAO = new SQLClearDAO();
             userDAO = new SQLUserDAO();
             gameDAO = new SQLGameDAO();
+            clearService = new ClearService(clearDAO);
+            userService = new UserService(userDAO);
+            gameService = new GameService(gameDAO, userDAO);
+            webSocketHandler = new WebSocketHandler();
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
-
-        clearService = new ClearService(clearDAO);
-        userService = new UserService(userDAO);
-        gameService = new GameService(gameDAO, userDAO);
-        webSocketHandler = new WebSocketHandler();
     }
 
     public static void main(String[] args) {

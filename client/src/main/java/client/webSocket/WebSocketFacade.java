@@ -1,6 +1,7 @@
 package client.webSocket;
 
 import chess.ChessMove;
+import client.VisualChessBoard;
 import com.google.gson.Gson;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
@@ -10,26 +11,40 @@ import java.net.URI;
 
 public class WebSocketFacade {
     private Session session;
+    private VisualChessBoard boardPrinter;
 
     public WebSocketFacade(String serverUrl) {
+        boardPrinter = new VisualChessBoard();
+
         try {
             serverUrl = serverUrl.replace("http", "ws");
             URI socketURI = new URI(serverUrl + "/connect");
 
             // Creates session
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            this.session = container.connectToServer(this, socketURI);
+            this.session = container.connectToServer(new Endpoint() {
+                @Override
+                public void onOpen(Session session, EndpointConfig endpointConfig) {}
+            }, socketURI);
 
             //set message handler
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                    System.out.println(serverMessage.getMessage());
+                    if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
+                        System.out.println(serverMessage.getMessage());
+                    } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
+                        boardPrinter.printGivenBoard(serverMessage.getBoard());
+                        System.out.println(serverMessage.getMessage());
+                    } else {
+                        System.out.println(serverMessage.getMessage());
+                    }
                 }
             });
 
         } catch (Throwable ex) {
+            ex.printStackTrace();
             System.out.println("Failure creating WebSocketFacade: " + ex.getMessage());
         }
     }
@@ -45,7 +60,7 @@ public class WebSocketFacade {
 
     public void joinObserver(String authToken, int gameID, String username) {
         try {
-            var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_PLAYER, authToken, gameID, null, username, null);
+            var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_OBSERVER, authToken, gameID, null, username, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
             System.out.println("Failure joining observer: " + ex.getMessage());
@@ -78,6 +93,4 @@ public class WebSocketFacade {
             System.out.println("Failure making move: " + ex.getMessage());
         }
     }
-
-
 }

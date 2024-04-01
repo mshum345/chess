@@ -1,20 +1,28 @@
 package server.websocket;
 
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
+import dataAccess.DataAccessException;
+import dataAccess.SQLGameDAO;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.util.HashMap;
 
+@WebSocket
 public class WebSocketHandler {
 
     // Map of GameID to a map of authtokens to sessions
     private final HashMap<Integer, HashMap<String, UserSessionInfo>> gameSessions;
+    private SQLGameDAO gameDAO;
 
-    public WebSocketHandler() {
+    public WebSocketHandler() throws DataAccessException {
         gameSessions = new HashMap<Integer, HashMap<String, UserSessionInfo>>();
+        gameDAO = new SQLGameDAO();
     }
 
     @OnWebSocketMessage
@@ -28,8 +36,26 @@ public class WebSocketHandler {
         }
     }
 
-    private void makeMove(UserGameCommand command, Session session) {
+    private void makeMove(UserGameCommand command, Session session) throws DataAccessException {
+        // Get variables
+        var gameData = gameDAO.getGame(command.getGameID());
+        var game = gameData.game();
+        var move = command.getMove();
+        var piece = game.getBoard().getPiece(move.getStartPosition()).getPieceType();
 
+        try {
+            // try to make move
+            game.makeMove(move);
+            gameDAO.replaceGame(new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game));
+
+            // Send Server Message
+            var message = String.format("%s has moved their %s from %s to %s", command.getUsername(), piece, move.getStartPosition().toString(), move.getEndPosition().toString());
+            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
+            serverMessage.setBoard(game.getBoard());
+            broadcast(serverMessage, command.getGameID(), command.getAuthToken());
+        } catch (InvalidMoveException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void leave(UserGameCommand command, Session session) {

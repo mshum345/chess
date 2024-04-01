@@ -36,7 +36,6 @@ public class ChessClient {
     public ChessClient(String url) {
         this.serverUrl = url;
         this.state = UserState.LOGGED_OUT;
-        this.ws = new WebSocketFacade(serverUrl);
         this.board = new VisualChessBoard();
     }
 
@@ -355,8 +354,8 @@ public class ChessClient {
 
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
-
             // Connect to WebSocket
+            ws = new WebSocketFacade(serverUrl);
             if (observer) {
                 ws.joinObserver(authToken, game.gameID(), username);
                 state = UserState.OBSERVER;
@@ -375,6 +374,4 @@ public class ChessClient {
     public UserState getState() {
         return this.state;
     }
-
-
 }
