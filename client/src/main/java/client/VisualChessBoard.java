@@ -1,6 +1,8 @@
 package client;
 
 import chess.ChessBoard;
+import chess.ChessPiece;
+import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -10,6 +12,26 @@ import static ui.EscapeSequences.*;
 public class VisualChessBoard {
 
     public void printGivenBoard(ChessBoard board) {
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        var symbols = new String[] {"a", "b", "c", "d", "e", "f", "g", "h"};
+
+        for (int i = 1; i < 9; i++) {
+            drawGreySymbol(i);
+            for (int j = 1; j < 9; j++) {
+                drawPiece(board.getPiece(new ChessPosition(i,j)));
+            }
+            drawGreySymbol(i);
+        }
+
+        drawGreyRow(out, symbols);
+        out.print(SET_TEXT_COLOR_GREEN);
+    }
+
+    private void drawPiece(ChessPiece piece) {
+
+    }
+
+    private void drawGreySymbol(int i) {
 
     }
 
