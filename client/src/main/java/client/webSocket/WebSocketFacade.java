@@ -1,6 +1,6 @@
 package client.webSocket;
 
-import chess.ChessMove;
+import chess.*;
 import client.VisualChessBoard;
 import com.google.gson.Gson;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -12,6 +12,7 @@ import java.net.URI;
 public class WebSocketFacade {
     private Session session;
     private VisualChessBoard boardPrinter;
+    private ChessGame currentGame;
 
     public WebSocketFacade(String serverUrl) {
         boardPrinter = new VisualChessBoard();
@@ -33,9 +34,11 @@ public class WebSocketFacade {
                 public void onMessage(String message) {
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
                     if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
+                        currentGame = serverMessage.getGame();
                         System.out.println(serverMessage.getMessage());
                     } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
-                        boardPrinter.printGivenBoard(serverMessage.getBoard());
+                        currentGame = serverMessage.getGame();
+                        boardPrinter.printGivenBoard(currentGame.getBoard(), null);
                         System.out.println(serverMessage.getMessage());
                     } else {
                         System.out.println(serverMessage.getMessage());
@@ -53,6 +56,7 @@ public class WebSocketFacade {
         try {
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_PLAYER, authToken, gameID, null, username, playerColor);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
+            boardPrinter.printGivenBoard(currentGame.getBoard(), null);
         } catch (Throwable ex) {
             System.out.println("Failure joining player: " + ex.getMessage());
         }
@@ -62,6 +66,7 @@ public class WebSocketFacade {
         try {
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_OBSERVER, authToken, gameID, null, username, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
+            boardPrinter.printGivenBoard(currentGame.getBoard(), null);
         } catch (Throwable ex) {
             System.out.println("Failure joining observer: " + ex.getMessage());
         }
@@ -85,12 +90,42 @@ public class WebSocketFacade {
         }
     }
 
-    public void makeMove(String authToken, int gameID, ChessMove newMove) {
+    public void makeMove(String authToken, int gameID, String[] params) {
         try {
+            // get move
+            var startPos = new ChessPosition(Integer.parseInt(params[0]), Integer.parseInt(params[1]));
+            var endPos = new ChessPosition(Integer.parseInt(params[2]), Integer.parseInt(params[3]));
+            ChessPiece.PieceType promoPiece = null;
+
+            if (params.length > 4) {
+                promoPiece = switch (params[4].toLowerCase()) {
+                    case "pawn" -> ChessPiece.PieceType.PAWN;
+                    case "rook" -> ChessPiece.PieceType.ROOK;
+                    case "knight" -> ChessPiece.PieceType.KNIGHT;
+                    case "bishop" -> ChessPiece.PieceType.BISHOP;
+                    case "king" -> ChessPiece.PieceType.KING;
+                    case "queen" -> ChessPiece.PieceType.QUEEN;
+                    default -> null;
+                };
+            }
+
+            var newMove = new ChessMove(startPos, endPos, promoPiece);
+
+            // send move command
             var command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, newMove, null, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
             System.out.println("Failure making move: " + ex.getMessage());
         }
+    }
+
+    public void drawCurrentBoard() {
+        boardPrinter.printGivenBoard(currentGame.getBoard(), null);
+    }
+
+    public void drawLegalMoves(String row, String col) {
+        var validMoves = currentGame.validMoves(new ChessPosition(Integer.parseInt(row), Integer.parseInt(col)));
+
+        boardPrinter.printGivenBoard(currentGame.getBoard(), validMoves);
     }
 }

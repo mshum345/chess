@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessBoard;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
@@ -26,6 +27,7 @@ public class ChessClient {
     Map<Integer, GameData> gameMap;
     VisualChessBoard board;
     private UserState state;
+
     public enum UserState {
         LOGGED_OUT,
         LOGGED_IN,
@@ -62,9 +64,9 @@ public class ChessClient {
         return """
                 redraw chess board - draws the current chess board
                 leave - leaves the game
-                make move - makes a move in chess
+                make move <start row> <start column> <end row> <end collumn> <promotion piece (write "none" if not applicable)> - makes a move in chess
                 resign - resigns you from the game
-                highlight legal moves - highlights all legal moves for a piece
+                highlight legal moves <row> <column> - highlights all legal moves for a piece
                 help - help with possible commands""";
     }
 
@@ -72,7 +74,7 @@ public class ChessClient {
         return """
                 redraw chess board - draws the current chess board
                 leave - leaves the game
-                highlight legal moves - highlights all legal moves for a piece
+                highlight legal moves <row> <column> - highlights all legal moves for a piece
                 help - help with possible commands""";
     }
 
@@ -116,9 +118,8 @@ public class ChessClient {
         }
     }
 
-    private String legalMoves(String[] params) {
-        board.printBoardBlack();
-        board.printBoardWhite();
+    private String legalMoves(String[] params) throws Exception {
+        ws.drawLegalMoves(params[0], params[1]);
         return "";
     }
 
@@ -129,8 +130,7 @@ public class ChessClient {
     }
 
     private String makeMove(String[] params) {
-        ChessMove newMove = new ChessMove(new ChessPosition(1, 1), new ChessPosition(2, 2), ChessPiece.PieceType.QUEEN);
-        ws.makeMove(authToken, currentGameID, newMove);
+        ws.makeMove(authToken, currentGameID, params);
         return "move made";
     }
 
@@ -141,8 +141,7 @@ public class ChessClient {
     }
 
     private String drawCurrentBoard(String[] params) {
-        board.printBoardWhite();
-        board.printBoardBlack();
+        ws.drawCurrentBoard();
         return "";
     }
 

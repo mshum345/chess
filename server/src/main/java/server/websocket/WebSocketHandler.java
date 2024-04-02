@@ -51,7 +51,7 @@ public class WebSocketHandler {
             // Send Server Message
             var message = String.format("%s has moved their %s from %s to %s", command.getUsername(), piece, move.getStartPosition().toString(), move.getEndPosition().toString());
             var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
-            serverMessage.setBoard(game.getBoard());
+            serverMessage.setGame(game);
             broadcast(serverMessage, command.getGameID(), command.getAuthToken());
         } catch (InvalidMoveException e) {
             System.out.println(e.getMessage());
@@ -79,6 +79,10 @@ public class WebSocketHandler {
     }
 
     private void joinUser(UserGameCommand command, Session session) throws Exception {
+        // Gets ChessGame
+        var gameData = gameDAO.getGame(command.getGameID());
+        var game = gameData.game();
+
         // Inserts UserSessionInfo into gameSessions HashMap
         var newUserInfo = new UserSessionInfo(command.getUsername(), command.getPlayerColor(), session);
         HashMap<String, UserSessionInfo> newHashMap = new HashMap<>();
@@ -98,6 +102,7 @@ public class WebSocketHandler {
 
         // Broadcasts message to all sessions but player who just joined
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        serverMessage.setGame(game);
         broadcast(serverMessage, command.getGameID(), command.getAuthToken());
 
     }

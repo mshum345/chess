@@ -1,6 +1,6 @@
 package webSocketMessages.serverMessages;
 
-import chess.ChessBoard;
+import chess.ChessGame;
 
 import java.util.Objects;
 
@@ -13,14 +13,14 @@ import java.util.Objects;
 public class ServerMessage {
     ServerMessageType serverMessageType;
     private String message;
-    private ChessBoard board;
+    private ChessGame game;
 
-    public ChessBoard getBoard() {
-        return board;
+    public ChessGame getGame() {
+        return game;
     }
 
-    public void setBoard(ChessBoard board) {
-        this.board = board;
+    public void setGame(ChessGame game) {
+        this.game = game;
     }
 
     public String getMessage() {
