@@ -8,11 +8,14 @@ import webSocketMessages.userCommands.UserGameCommand;
 
 import javax.websocket.*;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class WebSocketFacade {
     private Session session;
     private VisualChessBoard boardPrinter;
     private ChessGame currentGame;
+    private ChessGame.TeamColor userColor;
 
     public WebSocketFacade(String serverUrl) {
         boardPrinter = new VisualChessBoard();
@@ -38,7 +41,10 @@ public class WebSocketFacade {
                         System.out.println(serverMessage.getMessage());
                     } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
                         currentGame = serverMessage.getGame();
-                        boardPrinter.printGivenBoard(currentGame.getBoard(), null);
+
+                        // Prints board
+                        drawCurrentBoard();
+
                         System.out.println(serverMessage.getMessage());
                     } else {
                         System.out.println(serverMessage.getMessage());
@@ -54,9 +60,25 @@ public class WebSocketFacade {
 
     public void joinPlayer(String authToken, int gameID, String playerColor, String username) {
         try {
+            if (playerColor == "BLACK") {
+                userColor = ChessGame.TeamColor.BLACK;
+            }
+            else {
+                userColor = ChessGame.TeamColor.WHITE;
+            }
+
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_PLAYER, authToken, gameID, null, username, playerColor);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
-            boardPrinter.printGivenBoard(currentGame.getBoard(), null);
+
+            if (playerColor == "BLACK") {
+                userColor = ChessGame.TeamColor.BLACK;
+                boardPrinter.printGivenBoardBlack(currentGame.getBoard(), null);
+            }
+            else {
+                userColor = ChessGame.TeamColor.WHITE;
+                boardPrinter.printGivenBoardWhite(currentGame.getBoard(), null);
+            }
+
         } catch (Throwable ex) {
             System.out.println("Failure joining player: " + ex.getMessage());
         }
@@ -64,9 +86,10 @@ public class WebSocketFacade {
 
     public void joinObserver(String authToken, int gameID, String username) {
         try {
+            userColor = ChessGame.TeamColor.WHITE;
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_OBSERVER, authToken, gameID, null, username, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
-            boardPrinter.printGivenBoard(currentGame.getBoard(), null);
+            boardPrinter.printGivenBoardWhite(currentGame.getBoard(), null);
         } catch (Throwable ex) {
             System.out.println("Failure joining observer: " + ex.getMessage());
         }
@@ -92,9 +115,10 @@ public class WebSocketFacade {
 
     public void makeMove(String authToken, int gameID, String[] params) {
         try {
+
             // get move
-            var startPos = new ChessPosition(Integer.parseInt(params[0]), Integer.parseInt(params[1]));
-            var endPos = new ChessPosition(Integer.parseInt(params[2]), Integer.parseInt(params[3]));
+            var startPos = new ChessPosition(Integer.parseInt(params[0]), convertLetterToNum(params[1]));
+            var endPos = new ChessPosition(Integer.parseInt(params[2]), convertLetterToNum(params[3]));
             ChessPiece.PieceType promoPiece = null;
 
             if (params.length > 4) {
@@ -120,12 +144,35 @@ public class WebSocketFacade {
     }
 
     public void drawCurrentBoard() {
-        boardPrinter.printGivenBoard(currentGame.getBoard(), null);
+        if (userColor == ChessGame.TeamColor.WHITE) {
+            boardPrinter.printGivenBoardWhite(currentGame.getBoard(), null);
+        } else {
+            boardPrinter.printGivenBoardBlack(currentGame.getBoard(), null);
+        }
     }
 
     public void drawLegalMoves(String row, String col) {
-        var validMoves = currentGame.validMoves(new ChessPosition(Integer.parseInt(row), Integer.parseInt(col)));
+        var validMoves = currentGame.validMoves(new ChessPosition(Integer.parseInt(row), convertLetterToNum(col)));
 
-        boardPrinter.printGivenBoard(currentGame.getBoard(), validMoves);
+        if (userColor == ChessGame.TeamColor.WHITE) {
+            boardPrinter.printGivenBoardWhite(currentGame.getBoard(), validMoves);
+        } else {
+            // FLIP BOARD TO BLACK PERSPECTIVE AND THEN GIVE TO BOARDPRINTER
+            boardPrinter.printGivenBoardBlack(currentGame.getBoard(), validMoves);
+        }
+    }
+
+    public int convertLetterToNum (String letter) {
+        return switch (letter) {
+            case "a" -> 1;
+            case "b" -> 2;
+            case "c" -> 3;
+            case "d" -> 4;
+            case "e" -> 5;
+            case "f" -> 6;
+            case "g" -> 7;
+            case "h" -> 8;
+            default -> throw new IllegalArgumentException("Invalid letter: " + letter);
+        };
     }
 }
