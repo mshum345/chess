@@ -17,8 +17,10 @@ public class WebSocketFacade {
     private VisualChessBoard boardPrinter;
     private ChessGame currentGame;
     private ChessGame.TeamColor userColor;
+    NotificationHandler notificationHandler;
 
-    public WebSocketFacade(String serverUrl) {
+    public WebSocketFacade(String serverUrl, NotificationHandler notificationHandler) {
+        this.notificationHandler = notificationHandler;
         boardPrinter = new VisualChessBoard();
 
         try {
@@ -50,6 +52,7 @@ public class WebSocketFacade {
                     } else {
                         System.out.println(serverMessage.getMessage());
                     }
+                    notificationHandler.notify(serverMessage);
                 }
             });
 
@@ -70,16 +73,6 @@ public class WebSocketFacade {
 
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_PLAYER, authToken, gameID, null, username, playerColor);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
-
-            if (Objects.equals(playerColor, "BLACK")) {
-                var tempBoard = new ChessBoard(currentGame.getBoard());
-                tempBoard.flipBoard();
-                boardPrinter.printGivenBoardBlack(tempBoard, null);
-            }
-            else {
-                boardPrinter.printGivenBoardWhite(currentGame.getBoard(), null);
-            }
-
         } catch (Throwable ex) {
             System.out.println("Failure joining player: " + ex.getMessage());
         }
@@ -90,7 +83,6 @@ public class WebSocketFacade {
             userColor = ChessGame.TeamColor.WHITE;
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_OBSERVER, authToken, gameID, null, username, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
-            boardPrinter.printGivenBoardWhite(currentGame.getBoard(), null);
         } catch (Throwable ex) {
             System.out.println("Failure joining observer: " + ex.getMessage());
         }

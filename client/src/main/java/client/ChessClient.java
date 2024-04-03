@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import client.webSocket.NotificationHandler;
 import client.webSocket.WebSocketFacade;
 import com.google.gson.Gson;
 import model.ResponseData;
@@ -27,7 +28,7 @@ public class ChessClient {
     Map<Integer, GameData> gameMap;
     VisualChessBoard board;
     private UserState state;
-
+    private final NotificationHandler notificationHandler;
     public enum UserState {
         LOGGED_OUT,
         LOGGED_IN,
@@ -35,10 +36,11 @@ public class ChessClient {
         OBSERVER
     }
 
-    public ChessClient(String url) {
+    public ChessClient(String url, NotificationHandler notificationHandler) {
         this.serverUrl = url;
         this.state = UserState.LOGGED_OUT;
         this.board = new VisualChessBoard();
+        this.notificationHandler = notificationHandler;
     }
 
     public String preHelp() {
@@ -354,7 +356,7 @@ public class ChessClient {
         // Check if the request was successful
         if (responseCode == HttpURLConnection.HTTP_OK) {
             // Connect to WebSocket
-            ws = new WebSocketFacade(serverUrl);
+            ws = new WebSocketFacade(serverUrl, notificationHandler);
             if (observer) {
                 ws.joinObserver(authToken, game.gameID(), username);
                 state = UserState.OBSERVER;

@@ -1,15 +1,19 @@
 package client;
 
+import chess.ChessGame;
+import client.webSocket.NotificationHandler;
+import webSocketMessages.serverMessages.ServerMessage;
+
 import static ui.EscapeSequences.*;
 import java.util.Objects;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
 
-public class Repl {
+public class Repl implements NotificationHandler {
     private final ChessClient client;
     public Repl(String serverUrl) {
-        client = new ChessClient(serverUrl);
+        client = new ChessClient(serverUrl, this);
     }
 
     public void run() {
@@ -48,5 +52,10 @@ public class Repl {
         else {
             System.out.print("[LOGGED_OUT] >>> ");
         }
+    }
+
+    @Override
+    public void notify(ServerMessage serverMessage) {
+        printPrompt();
     }
 }

@@ -105,6 +105,11 @@ public class WebSocketHandler {
         serverMessage.setGame(game);
         broadcast(serverMessage, command.getGameID(), command.getAuthToken());
 
+        // Sends current game to joined player
+        serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, "");
+        var userInfo = gameSessions.get(command.getGameID()).get(command.getAuthToken());
+        serverMessage.setGame(game);
+        userInfo.getSession().getRemote().sendString(new Gson().toJson(serverMessage));
     }
 
     private void broadcast(ServerMessage serverMessage, int gameID, String excludeAuth) {
