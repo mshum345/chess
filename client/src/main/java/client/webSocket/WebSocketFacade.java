@@ -10,6 +10,7 @@ import javax.websocket.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class WebSocketFacade {
     private Session session;
@@ -60,7 +61,7 @@ public class WebSocketFacade {
 
     public void joinPlayer(String authToken, int gameID, String playerColor, String username) {
         try {
-            if (playerColor == "BLACK") {
+            if (Objects.equals(playerColor, "BLACK")) {
                 userColor = ChessGame.TeamColor.BLACK;
             }
             else {
@@ -70,12 +71,12 @@ public class WebSocketFacade {
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_PLAYER, authToken, gameID, null, username, playerColor);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
 
-            if (playerColor == "BLACK") {
-                userColor = ChessGame.TeamColor.BLACK;
-                boardPrinter.printGivenBoardBlack(currentGame.getBoard(), null);
+            if (Objects.equals(playerColor, "BLACK")) {
+                var tempBoard = new ChessBoard(currentGame.getBoard());
+                tempBoard.flipBoard();
+                boardPrinter.printGivenBoardBlack(tempBoard, null);
             }
             else {
-                userColor = ChessGame.TeamColor.WHITE;
                 boardPrinter.printGivenBoardWhite(currentGame.getBoard(), null);
             }
 
@@ -147,7 +148,9 @@ public class WebSocketFacade {
         if (userColor == ChessGame.TeamColor.WHITE) {
             boardPrinter.printGivenBoardWhite(currentGame.getBoard(), null);
         } else {
-            boardPrinter.printGivenBoardBlack(currentGame.getBoard(), null);
+            var tempBoard = new ChessBoard(currentGame.getBoard());
+            tempBoard.flipBoard();
+            boardPrinter.printGivenBoardBlack(tempBoard, null);
         }
     }
 
@@ -157,8 +160,20 @@ public class WebSocketFacade {
         if (userColor == ChessGame.TeamColor.WHITE) {
             boardPrinter.printGivenBoardWhite(currentGame.getBoard(), validMoves);
         } else {
-            // FLIP BOARD TO BLACK PERSPECTIVE AND THEN GIVE TO BOARDPRINTER
-            boardPrinter.printGivenBoardBlack(currentGame.getBoard(), validMoves);
+            // Flips board to black perspective
+            var tempBoard = new ChessBoard(currentGame.getBoard());
+            tempBoard.flipBoard();
+
+            // Flips valid moves to black perspective
+            var flippedMoves = new ArrayList<ChessMove>();
+            for (ChessMove move : validMoves) {
+                ChessPosition flippedStart = new ChessPosition(9 - move.getStartPosition().getRow(), 9 - move.getStartPosition().getColumn());
+                ChessPosition flippedEnd = new ChessPosition(9 - move.getEndPosition().getRow(), 9 - move.getEndPosition().getColumn());
+                flippedMoves.add(new ChessMove(flippedStart, flippedEnd, move.getPromotionPiece()));
+            }
+
+            // Prints the board
+            boardPrinter.printGivenBoardBlack(tempBoard, validMoves);
         }
     }
 

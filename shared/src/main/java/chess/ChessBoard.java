@@ -30,6 +30,24 @@ public class ChessBoard {
         }
     }
 
+    public void flipBoard() {
+        ChessPiece[][] newSquares = new ChessPiece[8][8];
+
+        // Rearrange the pieces upside down
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPiece piece = squares[i][j];
+                if (piece != null) {
+                    // Place the piece in the flipped position
+                    newSquares[7 - i][7 - j] = piece;
+                }
+            }
+        }
+
+        // Update the board with the flipped positions
+        squares = newSquares;
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
