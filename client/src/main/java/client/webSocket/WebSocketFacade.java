@@ -109,8 +109,8 @@ public class WebSocketFacade {
     public void makeMove(String authToken, int gameID, String[] params) {
         try {
             // get move
-            var startPos = new ChessPosition(convertToBoardIndex(Integer.parseInt(params[0])), convertLetterToNum(params[1]));
-            var endPos = new ChessPosition(convertToBoardIndex(Integer.parseInt(params[2])), convertLetterToNum(params[3]));
+            var startPos = new ChessPosition(Integer.parseInt(params[0]), convertLetterToNum(params[1]));
+            var endPos = new ChessPosition(Integer.parseInt(params[2]), convertLetterToNum(params[3]));
             ChessPiece.PieceType promoPiece = null;
 
             if (params.length > 4) {

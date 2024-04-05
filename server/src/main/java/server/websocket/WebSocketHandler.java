@@ -54,7 +54,13 @@ public class WebSocketHandler {
             var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
             serverMessage.setGame(game);
             broadcast(serverMessage, command.getGameID(), command.getAuthToken());
-        } catch (InvalidMoveException e) {
+
+            // Sends current game to player who made move
+            serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, "");
+            var userInfo = gameSessions.get(command.getGameID()).get(command.getAuthToken());
+            serverMessage.setGame(game);
+            userInfo.getSession().getRemote().sendString(new Gson().toJson(serverMessage));
+        } catch (Throwable e) {
             System.out.println(e.getMessage());
         }
     }
