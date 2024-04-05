@@ -64,7 +64,7 @@ public class WebSocketFacade {
 
     public void joinPlayer(String authToken, int gameID, String playerColor, String username) {
         try {
-            if (Objects.equals(playerColor, "BLACK")) {
+            if (Objects.equals(playerColor, "black")) {
                 userColor = ChessGame.TeamColor.BLACK;
             }
             else {
@@ -108,10 +108,9 @@ public class WebSocketFacade {
 
     public void makeMove(String authToken, int gameID, String[] params) {
         try {
-
             // get move
-            var startPos = new ChessPosition(Integer.parseInt(params[0]), convertLetterToNum(params[1]));
-            var endPos = new ChessPosition(Integer.parseInt(params[2]), convertLetterToNum(params[3]));
+            var startPos = new ChessPosition(convertToBoardIndex(Integer.parseInt(params[0])), convertLetterToNum(params[1]));
+            var endPos = new ChessPosition(convertToBoardIndex(Integer.parseInt(params[2])), convertLetterToNum(params[3]));
             ChessPiece.PieceType promoPiece = null;
 
             if (params.length > 4) {
@@ -147,16 +146,14 @@ public class WebSocketFacade {
     }
 
     public void drawLegalMoves(String row, String col) {
-        var validMoves = currentGame.validMoves(new ChessPosition(Integer.parseInt(row), convertLetterToNum(col)));
+        var validMoves = currentGame.validMoves(new ChessPosition(convertToBoardIndex(Integer.parseInt(row)), convertLetterToNum(col)));
 
-        if (userColor == ChessGame.TeamColor.WHITE) {
-            boardPrinter.printGivenBoardWhite(currentGame.getBoard(), validMoves);
-        } else {
+        if (userColor == ChessGame.TeamColor.BLACK) {
             // Flips board to black perspective
             var tempBoard = new ChessBoard(currentGame.getBoard());
             tempBoard.flipBoard();
 
-            // Flips valid moves to black perspective
+            // flips valid moves to black perspective
             var flippedMoves = new ArrayList<ChessMove>();
             for (ChessMove move : validMoves) {
                 ChessPosition flippedStart = new ChessPosition(9 - move.getStartPosition().getRow(), 9 - move.getStartPosition().getColumn());
@@ -164,8 +161,10 @@ public class WebSocketFacade {
                 flippedMoves.add(new ChessMove(flippedStart, flippedEnd, move.getPromotionPiece()));
             }
 
+            boardPrinter.printGivenBoardBlack(tempBoard, flippedMoves);
+        } else {
             // Prints the board
-            boardPrinter.printGivenBoardBlack(tempBoard, validMoves);
+            boardPrinter.printGivenBoardWhite(currentGame.getBoard(), validMoves);
         }
     }
 
@@ -181,5 +180,9 @@ public class WebSocketFacade {
             case "h" -> 8;
             default -> throw new IllegalArgumentException("Invalid letter: " + letter);
         };
+    }
+
+    public int convertToBoardIndex(int i) {
+        return 9 - i;
     }
 }

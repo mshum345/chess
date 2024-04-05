@@ -64,19 +64,19 @@ public class ChessClient {
 
     public String playerHelp() {
         return """
-                redraw chess board - draws the current chess board
+                redraw - redraws the current chess board
                 leave - leaves the game
-                make move <start row> <start column> <end row> <end collumn> <promotion piece (write "none" if not applicable)> - makes a move in chess
+                move <start row> <start column> <end row> <end collumn> <promotion piece (write "none" if not applicable)> - makes a move in chess
                 resign - resigns you from the game
-                highlight legal moves <row> <column> - highlights all legal moves for a piece
+                highlight <row> <column> - highlights all legal moves for a piece
                 help - help with possible commands""";
     }
 
     public String obsHelp() {
         return """
-                redraw chess board - draws the current chess board
+                redraw - redraws the current chess board
                 leave - leaves the game
-                highlight legal moves <row> <column> - highlights all legal moves for a piece
+                highlight <row> <column> - highlights all legal moves for a piece
                 help - help with possible commands""";
     }
 
@@ -96,18 +96,18 @@ public class ChessClient {
             };
         } else if (state == UserState.PLAYER) {
             return switch (cmd) {
-                case "redraw chess board" -> drawCurrentBoard(params);
+                case "redraw" -> drawCurrentBoard(params);
                 case "leave" -> leave(params);
-                case "make move" -> makeMove(params);
+                case "move" -> makeMove(params);
                 case "resign" -> resign(params);
-                case "highlight legal moves" -> legalMoves(params);
+                case "highlight" -> legalMoves(params);
                 default -> playerHelp();
             };
         } else if (state == UserState.OBSERVER) {
             return switch (cmd) {
-                case "redraw chess board" -> drawCurrentBoard(params);
+                case "redraw" -> drawCurrentBoard(params);
                 case "leave" -> leave(params);
-                case "highlight legal moves" -> legalMoves(params);
+                case "highlight" -> legalMoves(params);
                 default -> obsHelp();
             };
         } else {

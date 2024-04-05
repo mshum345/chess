@@ -89,6 +89,7 @@ public class VisualChessBoard {
             drawGreySymbol(out, greySymbol);
             out.print(SET_BG_COLOR_BLACK);
             out.println();
+            k++;
             greySymbol++;
         }
         drawGreyRow(out, symbols);
