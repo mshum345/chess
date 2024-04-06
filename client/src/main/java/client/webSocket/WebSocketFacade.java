@@ -109,8 +109,8 @@ public class WebSocketFacade {
     public void makeMove(String authToken, int gameID, String[] params) {
         try {
             // get move
-            var startPos = new ChessPosition(Integer.parseInt(params[0]), convertLetterToNum(params[1]));
-            var endPos = new ChessPosition(Integer.parseInt(params[2]), convertLetterToNum(params[3]));
+            var startPos = new ChessPosition(Integer.parseInt(params[0]), convertToBoardIndex(convertLetterToNum(params[1])));
+            var endPos = new ChessPosition(Integer.parseInt(params[2]), convertToBoardIndex(convertLetterToNum(params[3])));
             ChessPiece.PieceType promoPiece = null;
 
             if (params.length > 4) {
@@ -137,11 +137,11 @@ public class WebSocketFacade {
 
     public void drawCurrentBoard() {
         if (userColor == ChessGame.TeamColor.WHITE) {
-            boardPrinter.printGivenBoardWhite(currentGame.getBoard(), null);
-        } else {
             var tempBoard = new ChessBoard(currentGame.getBoard());
             tempBoard.flipBoard();
-            boardPrinter.printGivenBoardBlack(tempBoard, null);
+            boardPrinter.printGivenBoardWhite(tempBoard, null);
+        } else {
+            boardPrinter.printGivenBoardBlack(currentGame.getBoard(), null);
         }
     }
 
