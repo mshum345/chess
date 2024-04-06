@@ -146,13 +146,11 @@ public class WebSocketFacade {
     }
 
     public void drawLegalMoves(String row, String col) {
-        var validMoves = currentGame.validMoves(new ChessPosition(convertToBoardIndex(Integer.parseInt(row)), convertLetterToNum(col)));
+        var validMoves = currentGame.validMoves(new ChessPosition(Integer.parseInt(row), convertToBoardIndex(convertLetterToNum(col))));
 
         if (userColor == ChessGame.TeamColor.BLACK) {
-            // Flips board to black perspective
-            var tempBoard = new ChessBoard(currentGame.getBoard());
-            tempBoard.flipBoard();
-
+            boardPrinter.printGivenBoardBlack(currentGame.getBoard(), validMoves);
+        } else {
             // flips valid moves to black perspective
             var flippedMoves = new ArrayList<ChessMove>();
             for (ChessMove move : validMoves) {
@@ -161,10 +159,10 @@ public class WebSocketFacade {
                 flippedMoves.add(new ChessMove(flippedStart, flippedEnd, move.getPromotionPiece()));
             }
 
-            boardPrinter.printGivenBoardBlack(tempBoard, flippedMoves);
-        } else {
             // Prints the board
-            boardPrinter.printGivenBoardWhite(currentGame.getBoard(), validMoves);
+            var tempBoard = new ChessBoard(currentGame.getBoard());
+            tempBoard.flipBoard();
+            boardPrinter.printGivenBoardWhite(tempBoard, flippedMoves);
         }
     }
 
