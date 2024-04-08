@@ -66,7 +66,7 @@ public class GameService {
 
         // WHITE
         if (playerColor.equalsIgnoreCase("WHITE")) {
-            if (oldGameData.whiteUsername() != null) {
+            if (oldGameData.whiteUsername() != null && !oldGameData.whiteUsername().equals(checkAuth.username())) {
                 return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
 
@@ -75,7 +75,7 @@ public class GameService {
 
         // BLACK
         else if (playerColor.equalsIgnoreCase("BLACK")) {
-            if (oldGameData.blackUsername() != null) {
+            if (oldGameData.blackUsername() != null && !oldGameData.blackUsername().equals(checkAuth.username())) {
                 return new ResponseData(403, "Error: already taken", null, null, null, null);
             }
             newGameData = new GameData(gameID, oldGameData.whiteUsername(), checkAuth.username(), oldGameData.gameName(), oldGame);

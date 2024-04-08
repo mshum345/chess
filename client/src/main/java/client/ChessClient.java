@@ -369,7 +369,7 @@ public class ChessClient {
 
             return "Join Game Success.";
         } else {
-            return "Failed to Join Game. HTTP error code: " + responseCode;
+            return "Failed to Join Game or returned to previously joined game. HTTP code: " + responseCode;
         }
     }
 
