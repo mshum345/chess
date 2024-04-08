@@ -13,6 +13,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -115,6 +116,12 @@ public class WebSocketHandler {
                 gameSessions.remove(gameData.gameID());
             }
         } catch (Throwable e) {
+            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, e.getMessage());
+            try {
+                userInfo.getSession().getRemote().sendString(new Gson().toJson(serverMessage));
+            } catch (IOException ex) {
+                System.out.println(e.getMessage());
+            }
             System.out.println(e.getMessage());
         }
     }

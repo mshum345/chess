@@ -133,7 +133,7 @@ public class ChessClient {
 
     private String makeMove(String[] params) {
         ws.makeMove(authToken, currentGameID, params);
-        return "move made";
+        return "";
     }
 
     private String leave(String[] params) {

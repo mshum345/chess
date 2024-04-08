@@ -1,13 +1,8 @@
 package client;
-
-import chess.ChessGame;
 import client.webSocket.NotificationHandler;
 import webSocketMessages.serverMessages.ServerMessage;
-
 import static ui.EscapeSequences.*;
-import java.util.Objects;
 import java.util.Scanner;
-
 import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
 
 public class Repl implements NotificationHandler {

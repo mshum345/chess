@@ -21,7 +21,7 @@ public class ServerFacadeTests {
         gameDAO = new SQLGameDAO();
         var port = server.run(0);
         var url = "http://localhost:" + server.port();
-        client = new ChessClient(url);
+        client = new ChessClient(url, null);
         client.clearDatabase();
         System.out.println("Started test HTTP server on " + port);
     }
@@ -118,7 +118,7 @@ public class ServerFacadeTests {
     public void joinGameNeg() throws Exception {
         client.clearDatabase();
         client.register("testUser1", "testPass1", "testEmail");
-        Assertions.assertEquals("Failed to Join Game. HTTP error code: 400", client.joinGame("1", "WHITE"));
+        Assertions.assertEquals("Failed to Join Game or returned to previously joined game. HTTP code: 400", client.joinGame("1", "WHITE"));
     }
 
     @Test
@@ -133,6 +133,6 @@ public class ServerFacadeTests {
     public void observeNeg() throws Exception {
         client.clearDatabase();
         client.register("testUser1", "testPass1", "testEmail");
-        Assertions.assertEquals("Failed to Join Game. HTTP error code: 400", client.joinGame("1", "WHITE"));
+        Assertions.assertEquals("Failed to Join Game or returned to previously joined game. HTTP code: 400", client.joinGame("1", "WHITE"));
     }
 }
