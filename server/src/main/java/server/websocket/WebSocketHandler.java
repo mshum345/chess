@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.ChessGame;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
@@ -13,6 +14,7 @@ import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -43,23 +45,75 @@ public class WebSocketHandler {
         var game = gameData.game();
         var move = command.getMove();
         var piece = game.getBoard().getPiece(move.getStartPosition()).getPieceType();
+        var userInfo = gameSessions.get(command.getGameID()).get(command.getAuthToken());
+        var endGame = false;
 
         try {
-            // try to make move
+            // Check for current turn
+            if (userInfo.getPlayerColor().equals("white")) {
+                if (game.getTeamTurn() != ChessGame.TeamColor.WHITE) {
+                    var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Not your turn!");
+                    userInfo.getSession().getRemote().sendString(new Gson().toJson(serverMessage));
+                    return;
+                }
+            }
+            else {
+                if (game.getTeamTurn() != ChessGame.TeamColor.BLACK) {
+                    var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Not your turn!");
+                    userInfo.getSession().getRemote().sendString(new Gson().toJson(serverMessage));
+                    return;
+                }
+            }
+
+            // Try to make move
             game.makeMove(move);
             gameDAO.replaceGame(new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game));
 
+            // Check for check, checkmate, and stalemate
+            var specialMessage = "";
+            if (!Objects.equals(userInfo.getPlayerColor(), "white")) {
+                if (game.isInCheck(ChessGame.TeamColor.BLACK)) {
+                    specialMessage = ": Black is in CHECK!";
+                }
+                if (game.isInStalemate(ChessGame.TeamColor.BLACK)) {
+                    specialMessage = ": Stalemate Detected!";
+                    endGame = true;
+                }
+                if (game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                    specialMessage = ": Black is in CHECKMATE! White Wins!";
+                    endGame = true;
+                }
+
+            } else {
+                if (game.isInCheck(ChessGame.TeamColor.WHITE)) {
+                    specialMessage = ": White is in CHECK!";
+                }
+                if (game.isInStalemate(ChessGame.TeamColor.WHITE)) {
+                    specialMessage = ": Stalemate Detected!";
+                    endGame = true;
+                }
+                if (game.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+                    specialMessage = ": White is in CHECKMATE! Black Wins!";
+                    endGame = true;
+                }
+            }
+
             // Send Server Message
             var message = String.format("%s has moved their %s from %s to %s", command.getUsername(), piece, move.getStartPosition().toString(), move.getEndPosition().toString());
+            message = message + specialMessage;
             var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
             serverMessage.setGame(game);
             broadcast(serverMessage, command.getGameID(), command.getAuthToken());
 
             // Sends current game to player who made move
-            serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, "");
-            var userInfo = gameSessions.get(command.getGameID()).get(command.getAuthToken());
+            serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, specialMessage);
             serverMessage.setGame(game);
             userInfo.getSession().getRemote().sendString(new Gson().toJson(serverMessage));
+
+            // end game if applicable
+            if (endGame) {
+                gameSessions.remove(gameData.gameID());
+            }
         } catch (Throwable e) {
             System.out.println(e.getMessage());
         }
