@@ -32,7 +32,8 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws Exception {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
-            case JOIN_PLAYER, JOIN_OBSERVER -> joinUser(command, session);
+            case JOIN_PLAYER -> joinUser(command, session);
+            case JOIN_OBSERVER -> joinObserver(command, session);
             case RESIGN -> resign(command, session);
             case LEAVE -> leave(command, session);
             case MAKE_MOVE -> makeMove(command, session);
@@ -71,7 +72,7 @@ public class WebSocketHandler {
 
             // Check for check, checkmate, and stalemate
             var specialMessage = "";
-            if (!Objects.equals(userInfo.getPlayerColor(), "white")) {
+            if (Objects.equals(userInfo.getPlayerColor(), "white")) {
                 if (game.isInCheck(ChessGame.TeamColor.BLACK)) {
                     specialMessage = ": Black is in CHECK!";
                 }
@@ -99,7 +100,14 @@ public class WebSocketHandler {
             }
 
             // Send Server Message
-            var message = String.format("%s has moved their %s from %s to %s", command.getUsername(), piece, move.getStartPosition().toString(), move.getEndPosition().toString());
+            var row1 = move.getStartPosition().getRow();
+            var col1 = convertNumToLetter(move.getStartPosition().getColumn());
+            var row2 = move.getEndPosition().getRow();
+            var col2 = convertNumToLetter(move.getEndPosition().getColumn());
+            var start = row1 + col1;
+            var end = row2 + col2;
+
+            var message = String.format("%s has moved their %s from %s to %s", command.getUsername(), piece, start, end);
             message = message + specialMessage;
             var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
             serverMessage.setGame(game);
@@ -112,7 +120,6 @@ public class WebSocketHandler {
 
             // end game if applicable
             if (endGame) {
-                gameSessions.remove(gameData.gameID());
                 gameDAO.deleteGame(gameData.gameID());
             }
         } catch (Throwable e) {
@@ -128,7 +135,8 @@ public class WebSocketHandler {
 
     private void leave(UserGameCommand command, Session session) {
         // Send Server Message
-        var message = String.format("%s has left the game", command.getUsername());
+        var userInfo = gameSessions.get(command.getGameID()).get(command.getAuthToken());
+        var message = String.format("%s has left the game", userInfo.getUsername());
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         broadcast(serverMessage, command.getGameID(), command.getAuthToken());
 
@@ -138,12 +146,41 @@ public class WebSocketHandler {
 
     private void resign(UserGameCommand command, Session session) {
         // Send Server Message
-        var message = String.format("%s has resigned from the game", command.getUsername());
+        var userInfo = gameSessions.get(command.getGameID()).get(command.getAuthToken());
+        var message = String.format("%s has resigned from the game", userInfo.getUsername());
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         broadcast(serverMessage, command.getGameID(), command.getAuthToken());
+    }
 
-        // Remove game from gameSessions
-        gameSessions.remove(command.getGameID());
+    private void joinObserver(UserGameCommand command, Session session) throws Exception {
+        // Gets ChessGame
+        var gameData = gameDAO.getGame(command.getGameID());
+        var game = gameData.game();
+
+        // inserts into gameSessions
+        HashMap<String, UserSessionInfo> newHashMap;
+        if (gameSessions.get(command.getGameID()) == null) {
+            newHashMap = new HashMap<>();
+            var newUserInfo = new UserSessionInfo(command.getUsername(), command.getPlayerColor(), session);
+            newHashMap.put(command.getAuthToken(), newUserInfo);
+            gameSessions.put(command.getGameID(), newHashMap);
+        } else {
+            var newUserInfo = new UserSessionInfo(command.getUsername(), command.getPlayerColor(), session);
+            gameSessions.get(command.getGameID()).put(command.getAuthToken(), newUserInfo);
+        }
+
+        var message = String.format("%s has joined the game as an observer", command.getUsername());
+
+        // Broadcasts message to all sessions but player who just joined
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        serverMessage.setGame(game);
+        broadcast(serverMessage, command.getGameID(), command.getAuthToken());
+
+        // Sends current game to joined player
+        serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, "");
+        var userInfo = gameSessions.get(command.getGameID()).get(command.getAuthToken());
+        serverMessage.setGame(game);
+        userInfo.getSession().getRemote().sendString(new Gson().toJson(serverMessage));
     }
 
     private void joinUser(UserGameCommand command, Session session) throws Exception {
@@ -167,11 +204,17 @@ public class WebSocketHandler {
             }
         }
 
-        // Inserts UserSessionInfo into gameSessions HashMap
-        var newUserInfo = new UserSessionInfo(command.getUsername(), command.getPlayerColor(), session);
-        HashMap<String, UserSessionInfo> newHashMap = new HashMap<>();
-        newHashMap.put(command.getAuthToken(), newUserInfo);
-        gameSessions.put(command.getGameID(), newHashMap);
+        // inserts into gameSessions
+        HashMap<String, UserSessionInfo> newHashMap;
+        if (gameSessions.get(command.getGameID()) == null) {
+            newHashMap = new HashMap<>();
+            var newUserInfo = new UserSessionInfo(command.getUsername(), command.getPlayerColor(), session);
+            newHashMap.put(command.getAuthToken(), newUserInfo);
+            gameSessions.put(command.getGameID(), newHashMap);
+        } else {
+            var newUserInfo = new UserSessionInfo(command.getUsername(), command.getPlayerColor(), session);
+            gameSessions.get(command.getGameID()).put(command.getAuthToken(), newUserInfo);
+        }
 
         // sets correct notification message (Observer or Player)
         var message = "";
@@ -194,6 +237,20 @@ public class WebSocketHandler {
         var userInfo = gameSessions.get(command.getGameID()).get(command.getAuthToken());
         serverMessage.setGame(game);
         userInfo.getSession().getRemote().sendString(new Gson().toJson(serverMessage));
+    }
+
+    public String convertNumToLetter (int num) {
+        return switch (num) {
+            case 1 -> "h";
+            case 2 -> "g";
+            case 3 -> "f";
+            case 4 -> "e";
+            case 5 -> "d";
+            case 6 -> "c";
+            case 7 -> "b";
+            case 8 -> "a";
+            default -> throw new IllegalArgumentException("Invalid letter: ");
+        };
     }
 
     private void broadcast(ServerMessage serverMessage, int gameID, String excludeAuth) {

@@ -345,9 +345,9 @@ public class ChessClient {
         }
 
         // Handles gameID hiding from user
-        currentGameID = Integer.parseInt(params[0]);
-        GameData game = gameMap.get(currentGameID);
+        GameData game = gameMap.get(Integer.parseInt(params[0]));
         String gameID = Integer.toString(game.gameID());
+        currentGameID = game.gameID();
 
         // Write out the body
         var body = Map.of("gameID", gameID, "playerColor", playerColor);
