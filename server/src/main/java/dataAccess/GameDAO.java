@@ -12,4 +12,6 @@ public interface GameDAO {
     void replaceGame(GameData gameData) throws DataAccessException;
 
     GameData getGame(int gameID) throws DataAccessException;
+
+    void deleteGame(int i) throws DataAccessException;
 }

@@ -1,14 +1,12 @@
 package server.websocket;
 
 import chess.ChessGame;
-import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.SQLGameDAO;
 import dataAccess.SQLUserDAO;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -24,12 +22,10 @@ public class WebSocketHandler {
     // Map of GameID to a map of authtokens to sessions
     private final HashMap<Integer, HashMap<String, UserSessionInfo>> gameSessions;
     private final SQLGameDAO gameDAO;
-    private final SQLUserDAO userDAO;
 
     public WebSocketHandler() throws DataAccessException {
         gameSessions = new HashMap<Integer, HashMap<String, UserSessionInfo>>();
         gameDAO = new SQLGameDAO();
-        userDAO = new SQLUserDAO();
     }
 
     @OnWebSocketMessage
@@ -117,6 +113,7 @@ public class WebSocketHandler {
             // end game if applicable
             if (endGame) {
                 gameSessions.remove(gameData.gameID());
+                gameDAO.deleteGame(gameData.gameID());
             }
         } catch (Throwable e) {
             var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, e.getMessage());

@@ -95,4 +95,15 @@ public class SQLGameDAO implements GameDAO {
         }
         return null;
     }
+
+    public void deleteGame(int gameID) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement("DELETE FROM games WHERE gameID = ?")) {
+
+            ps.setInt(1, gameID);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(String.format("unable to delete game: %s", e.getMessage()));
+        }
+    }
 }

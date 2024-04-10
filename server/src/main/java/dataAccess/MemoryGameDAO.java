@@ -32,4 +32,8 @@ public class MemoryGameDAO implements GameDAO{
     public GameData getGame(int gameID) {
         return games.get(gameID);
     }
+
+    public void deleteGame(int gameID) throws DataAccessException {
+        games.remove(gameID);
+    }
 }
