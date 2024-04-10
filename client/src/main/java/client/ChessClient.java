@@ -1,9 +1,5 @@
 package client;
 
-import chess.ChessBoard;
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
 import client.webSocket.NotificationHandler;
 import client.webSocket.WebSocketFacade;
 import com.google.gson.Gson;
@@ -18,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class ChessClient {
     private WebSocketFacade ws;
@@ -126,9 +123,17 @@ public class ChessClient {
     }
 
     private String resign(String[] params) {
-        state = UserState.LOGGED_IN;
-        ws.resign(authToken, currentGameID);
-        return "resigned from game";
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Are you sure you want to resign? yes or no");
+        var line = scanner.nextLine();
+
+        if (line.equals("yes")) {
+            state = UserState.LOGGED_IN;
+            ws.resign(authToken, currentGameID);
+            return "resigned from game";
+        }
+        return "you didn't resign";
     }
 
     private String makeMove(String[] params) {
@@ -369,7 +374,7 @@ public class ChessClient {
 
             return "Join Game Success.";
         } else {
-            return "Failed to Join Game or returned to previously joined game. HTTP code: " + responseCode;
+            return "Failed to Join Game HTTP code: " + responseCode;
         }
     }
 

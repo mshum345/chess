@@ -5,6 +5,7 @@ import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.SQLGameDAO;
+import dataAccess.SQLUserDAO;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
@@ -22,11 +23,13 @@ public class WebSocketHandler {
 
     // Map of GameID to a map of authtokens to sessions
     private final HashMap<Integer, HashMap<String, UserSessionInfo>> gameSessions;
-    private SQLGameDAO gameDAO;
+    private final SQLGameDAO gameDAO;
+    private final SQLUserDAO userDAO;
 
     public WebSocketHandler() throws DataAccessException {
         gameSessions = new HashMap<Integer, HashMap<String, UserSessionInfo>>();
         gameDAO = new SQLGameDAO();
+        userDAO = new SQLUserDAO();
     }
 
     @OnWebSocketMessage
@@ -150,6 +153,22 @@ public class WebSocketHandler {
         // Gets ChessGame
         var gameData = gameDAO.getGame(command.getGameID());
         var game = gameData.game();
+
+        // Check if User is taken
+        if (command.getPlayerColor().equals("white")) {
+            if (gameData.whiteUsername() != null && !Objects.equals(command.getUsername(), gameData.whiteUsername())) {
+                var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Spot already taken");
+                session.getRemote().sendString(new Gson().toJson(serverMessage));
+                return;
+            }
+        }
+        else {
+            if (gameData.blackUsername() != null && !Objects.equals(command.getUsername(), gameData.blackUsername())) {
+                var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Spot already taken");
+                session.getRemote().sendString(new Gson().toJson(serverMessage));
+                return;
+            }
+        }
 
         // Inserts UserSessionInfo into gameSessions HashMap
         var newUserInfo = new UserSessionInfo(command.getUsername(), command.getPlayerColor(), session);

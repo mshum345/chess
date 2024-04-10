@@ -9,12 +9,11 @@ import webSocketMessages.userCommands.UserGameCommand;
 import javax.websocket.*;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
 
 public class WebSocketFacade {
     private Session session;
-    private VisualChessBoard boardPrinter;
+    private final VisualChessBoard boardPrinter;
     private ChessGame currentGame;
     private ChessGame.TeamColor userColor;
     NotificationHandler notificationHandler;
@@ -34,7 +33,7 @@ public class WebSocketFacade {
                 public void onOpen(Session session, EndpointConfig endpointConfig) {}
             }, socketURI);
 
-            //set message handler
+            /* set message handler */
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
@@ -57,8 +56,8 @@ public class WebSocketFacade {
             });
 
         } catch (Throwable ex) {
-            ex.printStackTrace();
-            System.out.println("Failure creating WebSocketFacade: " + ex.getMessage());
+            // ex.printStackTrace();
+            System.out.println("Error creating WebSocketFacade: " + ex.getMessage());
         }
     }
 
@@ -74,7 +73,7 @@ public class WebSocketFacade {
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_PLAYER, authToken, gameID, null, username, playerColor);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
-            System.out.println("Failure joining player: " + ex.getMessage());
+            System.out.println("Error joining player: " + ex.getMessage());
         }
     }
 
@@ -84,7 +83,7 @@ public class WebSocketFacade {
             var command = new UserGameCommand(UserGameCommand.CommandType.JOIN_OBSERVER, authToken, gameID, null, username, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
-            System.out.println("Failure joining observer: " + ex.getMessage());
+            System.out.println("Error joining observer: " + ex.getMessage());
         }
     }
 
@@ -93,7 +92,7 @@ public class WebSocketFacade {
             var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID, null, null, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
-            System.out.println("Failure resigning from game: " + ex.getMessage());
+            System.out.println("Error resigning from game: " + ex.getMessage());
         }
     }
 
@@ -102,7 +101,7 @@ public class WebSocketFacade {
             var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID, null, null, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
-            System.out.println("Failure leaving game: " + ex.getMessage());
+            System.out.println("Error leaving game: " + ex.getMessage());
         }
     }
 
@@ -131,7 +130,7 @@ public class WebSocketFacade {
             var command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, newMove, null, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (Throwable ex) {
-            System.out.println("Failure making move: " + ex.getMessage());
+            System.out.println("Error making move, make sure you are inputing commands in the correct format. Error: " + ex.getMessage());
         }
     }
 
@@ -146,7 +145,9 @@ public class WebSocketFacade {
     }
 
     public void drawLegalMoves(String row, String col) {
-        var validMoves = currentGame.validMoves(new ChessPosition(Integer.parseInt(row), convertToBoardIndex(convertLetterToNum(col))));
+        var myPos = new ChessPosition(Integer.parseInt(row), convertToBoardIndex(convertLetterToNum(col)));
+        var validMoves = currentGame.validMoves(myPos);
+        validMoves.add(new ChessMove(myPos, myPos, null));
 
         if (userColor == ChessGame.TeamColor.BLACK) {
             boardPrinter.printGivenBoardBlack(currentGame.getBoard(), validMoves);
